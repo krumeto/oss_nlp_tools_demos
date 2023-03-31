@@ -1,0 +1,11 @@
+sentence-transformers
+bulk
+bertopic
+numpy
+pandas
+embetter
+hdbscan
+ipykernel
+python-dotenv
+scikit-learn
+umap-learn

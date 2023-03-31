@@ -4,7 +4,7 @@ This repo contains demos of Open Source NLP tools
 
 ## Setup
 
-#### Dev Container (preferred)
+### Dev Container (preferred)
 
 The repo could run locally on a virtual environment, but I recommend using the Dev Container setup.
 
@@ -15,18 +15,26 @@ For a dev container setup in VScode, you'd need
 
     Once installed, check that you see a new icon at the bottom-left of the screen, it should looks like this: `><` with the right bracket a bit higher than the left bracket.
 
-3. Open the repo in the container.
+3. Make sure that you have a `.env` file in root that stores #TODO.
+
+4.. Open the repo in the container.
 
     The next thing to do is to run the Docker container specified in Dockerfile (with Python) and open this repository in that container. To do this, click on the `><` icon bottom-left of the screen and select "Reopen in Container". Once all requirements defined in requirements.txt are installed, the environment is set and you can code forward.
 
-#### Virtual Environment
+### Virtual Environment
 
 If you prefer to work on a virtual environment, you can do your usual routine, for example. 
 
-```shell
+```bash
 python3 -m venv nlp_tools
 source nlp_tools/bin/activate
 pip install -r requirements.txt
+```
+
+In all cases, run the below once either the Dev Container or the virtual environment is activated, so that the imports work (I hate python imports)
+
+```bash
+sudo python setup.py develop
 ```
 
 ## Dataset 

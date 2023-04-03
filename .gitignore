@@ -132,3 +132,4 @@ models/
 embeddings/
 data/recipes_raw.zip
 *.joblib
+data/bulk*

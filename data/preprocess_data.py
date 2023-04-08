@@ -2,6 +2,12 @@ import pandas as pd
 import json
 import zipfile
 
+def remove_advertisement(df, col_list = ['instructions', 'title', 'full_text']):
+    "Remove the AD word"
+    for col in col_list:
+        df[col] = df[col].str.replace('ADVERTISEMENT', '')
+    return df
+
 def combine_json_to_dataframe(zip_file_path, num_words_cutoff = 20) -> pd.DataFrame:
     """
     Combines data from three JSON files containing recipes, loads them into a Pandas DataFrame, and 
@@ -34,14 +40,17 @@ def combine_json_to_dataframe(zip_file_path, num_words_cutoff = 20) -> pd.DataFr
     # Add a new column with the concatenated text
     df['full_text'] = 'Recipe title: ' + df['title'] + '. Ingredients: ' + df['ingredients'].apply(lambda x: '; '.join(x)) + '. Instructions: ' + df['instructions']
     
-    # Drop picture link
-    df = df.drop(['picture_link'], axis = 1)
     
-    # Add a column with the number of words in the full_text column
-    df['num_words'] = df['full_text'].str.split().str.len()
-    
-    # Remove short recipes - most are just tests
-    df = df.loc[lambda d: d['num_words'] > num_words_cutoff]
+    df = (df.
+          # remove adds
+          pipe(remove_advertisement).
+          # drop the picture_link column
+          drop(['picture_link'], axis = 1).
+          # give a num_words estimation
+          assign(num_words = lambda d: d['full_text'].str.split().str.len()).
+          # drop short articles
+          loc[lambda d: d['num_words'] > num_words_cutoff]
+    )
 
     return df
 

@@ -50,4 +50,5 @@ sudo python setup.py develop
 - [Pigeon](https://github.com/agermanidis/pigeon) - simple annotation in Jupyter
 - [Langchain & Chroma](https://python.langchain.com/en/latest/index.html) - many NLP goodies, but in this case, indexing, vector storing & search.
 - [Simsity](https://github.com/koaning/simsity) - lightweight indexing, storing and search
+- [SetFit] (https://github.com/huggingface/setfit) - few-shot learning and classification
 - [Streamlit](https://streamlit.io/) - simple deployment and data apps

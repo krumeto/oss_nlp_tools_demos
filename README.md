@@ -1,4 +1,4 @@
-https://www.linkedin.com/in/krum-arnaudov-ba8b7217/# oss_nlp_tools_demos
+# Going far in NLP with open source tools
 
 This repo contains demos of Open Source NLP tools
 

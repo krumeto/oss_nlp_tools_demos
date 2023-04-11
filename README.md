@@ -21,7 +21,7 @@ For a dev container setup in VScode, you'd need
 
 3. Make sure that you have a `.env` file in root that stores #TODO.
 
-4.. Open the repo in the container.
+4. Open the repo in the container.
 
     The next thing to do is to run the Docker container specified in Dockerfile (with Python) and open this repository in that container. To do this, click on the `><` icon bottom-left of the screen and select "Reopen in Container". Once all requirements defined in requirements.txt are installed, the environment is set and you can code forward.
 

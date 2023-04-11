@@ -1,4 +1,4 @@
-# oss_nlp_tools_demos
+https://www.linkedin.com/in/krum-arnaudov-ba8b7217/# oss_nlp_tools_demos
 
 This repo contains demos of Open Source NLP tools
 
@@ -50,5 +50,19 @@ sudo python setup.py develop
 - [Pigeon](https://github.com/agermanidis/pigeon) - simple annotation in Jupyter
 - [Langchain & Chroma](https://python.langchain.com/en/latest/index.html) - many NLP goodies, but in this case, indexing, vector storing & search.
 - [Simsity](https://github.com/koaning/simsity) - lightweight indexing, storing and search
-- [SetFit] (https://github.com/huggingface/setfit) - few-shot learning and classification
+- [SetFit](https://github.com/huggingface/setfit) - few-shot learning and classification
 - [Streamlit](https://streamlit.io/) - simple deployment and data apps
+
+## Notebooks
+
+| Topic  | Tool | Notebook Link
+| ------------- | ------------- | ------------- |
+| Embeddings  | Sentence Transformers  |[here](/notebooks/sentence_transformers_embeddings.ipynb)|
+| Embeddings  | TF IDF |[here](/notebooks/tfidf_embeddings.ipynb)|
+| Embeddings visualization  | Bulk |[here](/notebooks/bulk_prepwork.ipynb) + `bulk text data/bulk_st.csv` in the terminal|
+| Topic modelling | BERTopic |[here](/notebooks/bertopic_overview.ipynb)|
+| Simple annotations| Pigeon |[here](/notebooks/annotations.ipynb)|
+| Few shot classification| SetFit |[here](/notebooks/setfit_fewshot_classification.ipynb)|
+| Simple Indexing and Search| Simsity |[here](/notebooks/simsity_index.ipynb)|
+| Indexing & Search with Langchain| Langchain |[here](/notebooks/langchain_intro.ipynb)|
+| Streamlit search app| Streamlit |[here](/streamlit_app/search_app.py), then `streamlit run streamlit_app/search_app.py`|

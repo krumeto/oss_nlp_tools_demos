@@ -1,0 +1,56 @@
+---
+title: "Going far with open source tools in NLP"
+subtitle: "Krum Arnaudov, Data Scientist at Financial Times, 2023"
+format:
+  revealjs: 
+    slide-number: true
+    preview-links: auto
+    logo: images/quarto.png
+    css: styles.css
+    footer: <https://quarto.org>
+resources:
+  - slides.pdf
+---
+
+## About me
+
+- Joined FT as Data Scientist in 2021
+- Past jobs as DS at Amplify Analytics, before that Account & Ops Management at HPI
+- ML knowledge largely self-taught via free online content + the AI specialisation at the SoftUni.
+- Main hobbies: my kids, some music, local politics
+
+## Revolution in NLP
+
+## Open?AI
+
+## Open Source
+
+## Text representation
+
+## word x word
+
+## word x document
+
+## dense representations
+
+## Semantic Similarity
+
+## Vector comparison
+
+## Document embeddings tools
+
+- TfIDF
+- Pooled word embeddings
+- Sentence Transformers
+- InstructorEmbeddings
+
+## Embeddings visualizations
+
+```{python}
+#| echo: false
+!python -m bulk text data/bulk_st.csv
+```
+
+## 
+
+

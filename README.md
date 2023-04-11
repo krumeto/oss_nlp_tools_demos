@@ -6,6 +6,14 @@ This repo contains demos of Open Source NLP tools
 
 The dataset used is the [Recipe Box](https://eightportions.com/datasets/Recipes/) dataset, collected by Ryan Lee. For the demos, I've kept only recipes with more than 20 words and cleaned the data lightly (see the [preprocess_data.py script](../oss_nlp_tools_demos/data/preprocess_data.py)).
 
+Run the following to download the recipes locally:
+
+
+```bash
+chmod +x dataload.sh
+./dataload.sh 
+```
+
 ## Setup
 
 ### Dev Container (preferred)
@@ -19,7 +27,7 @@ For a dev container setup in VScode, you'd need
 
     Once installed, check that you see a new icon at the bottom-left of the screen, it should looks like this: `><` with the right bracket a bit higher than the left bracket.
 
-3. Make sure that you have a `.env` file in root that stores #TODO.
+3. Make sure that you have a `.env` file in root. 
 
 4. Open the repo in the container.
 
@@ -59,7 +67,7 @@ sudo python setup.py develop
 | ------------- | ------------- | ------------- |
 | Embeddings  | Sentence Transformers  |[here](/notebooks/sentence_transformers_embeddings.ipynb)|
 | Embeddings  | TF IDF |[here](/notebooks/tfidf_embeddings.ipynb)|
-| Embeddings visualization  | Bulk |[here](/notebooks/bulk_prepwork.ipynb) + `bulk text data/bulk_st.csv` in the terminal|
+| Embeddings visualization  | Bulk |[here](/notebooks/bulk_prepwork.ipynb) + `python -m bulk text data/bulk_st.csv` in the terminal|
 | Topic modelling | BERTopic |[here](/notebooks/bertopic_overview.ipynb)|
 | Simple annotations| Pigeon |[here](/notebooks/annotations.ipynb)|
 | Few shot classification| SetFit |[here](/notebooks/setfit_fewshot_classification.ipynb)|

@@ -133,3 +133,4 @@ embeddings/
 data/recipes_raw.zip
 *.joblib
 data/bulk*
+slides_files/

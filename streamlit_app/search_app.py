@@ -31,7 +31,8 @@ def load_data():
 @st.cache_data
 def load_embeddings():
     return load("./embeddings/st_embeddings.joblib")
-    
+
+
 # Set browser title
 st.set_page_config(page_title="NLP Tools Demo", page_icon=":robot:")
 
@@ -53,6 +54,7 @@ model = load_model()
 
 option = st.sidebar.selectbox("Select Search Mode", ("Choose recipe by index", "Enter free text to search", "Try Q&A"))
 
+###########################################
 ### Option 1 - choose a recipe by its index
 if option == "Choose recipe by index":
     recipe_index = st.sidebar.number_input("Select a recipe index", min_value = 0)
@@ -79,6 +81,7 @@ if option == "Choose recipe by index":
     st.write('Here are the recipes:')
     st.dataframe(recipe_data.iloc[collect_idx_as_you_loop,:])
 
+###########################################
 ### Option 2 - Enter a text (recipe or ingredients) and vectorise with SentenceTransformer
 elif option == "Enter free text to search":
     search_text = st.sidebar.text_input("Enter recipe or ingredients")
@@ -131,7 +134,7 @@ elif option == "Enter free text to search":
         st.write('Here are the recipes:')
         st.dataframe(recipe_data.iloc[collect_idx_as_you_loop,:])
         
-        
+###########################################        
 ### Option 3 - Enter a question and get an answer
 elif option == "Try Q&A":
     question = st.sidebar.text_input("Ask a question:")
@@ -144,12 +147,14 @@ elif option == "Try Q&A":
         else:
             st.subheader(f"Query is **{question[:100].strip()}...**")
         
-        # vectorise the query
+        # vectorise the query and search
         query_embedding = model.encode(question)
         results = semantic_search(query_embedding, embeddings, top_k=n_hits_to_use)
 
+        # loop over results, collect scores and indices
         collect_idx_as_you_loop = []
         scores = []
+        # append recipes from top hits
         full_text = ""
         for hit in results[0]:
             idx = hit['corpus_id']
@@ -158,13 +163,15 @@ elif option == "Try Q&A":
             collect_idx_as_you_loop.append(idx)
             scores.append(score)
         
+        # load QA model and get answers
         qa_model = load_qa_model()
         answers = qa_model(
             question = question,
             context = full_text.strip(),         
-            top_k = 3,
-            max_answer_len = 50,
-            max_seq_length = 2000,
+            top_k = 3, # Get the top 3 answers
+            max_answer_len = 50, # up to 50 chars
+            max_seq_length = 2000, # answer + query 
+            max_question_len = 126, # increase the length of the question from the default 64 
             handle_impossible_answer = True
         )
         

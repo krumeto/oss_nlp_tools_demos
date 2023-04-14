@@ -38,8 +38,12 @@ def combine_json_to_dataframe(zip_file_path, num_words_cutoff = 20) -> pd.DataFr
     df = pd.DataFrame.from_dict(data, orient='index')
 
     # Add a new column with the concatenated text
-    df['full_text'] = 'Recipe title: ' + df['title'] + '. Ingredients: ' + df['ingredients'].apply(lambda x: '; '.join(x)) + '. Instructions: ' + df['instructions']
-    
+    df['full_text'] = ('Recipe title: ' + 
+                       df['title'] + 
+                       '. Ingredients: ' + 
+                       df['ingredients'].apply(lambda x: '; '.join(x)) + 
+                       '. Instructions: ' + 
+                       df['instructions'])
     
     df = (df.
           # remove adds
@@ -56,5 +60,5 @@ def combine_json_to_dataframe(zip_file_path, num_words_cutoff = 20) -> pd.DataFr
 
 if __name__ == "__main__":
     full_data = combine_json_to_dataframe("data/recipes_raw.zip")
-    print(full_data)
+    print(full_data.info())
 

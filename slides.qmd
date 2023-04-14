@@ -5,11 +5,13 @@ format:
   revealjs: 
     slide-number: true
     preview-links: auto
-    logo: images/quarto.png
+    logo: images/nlp_tools.jpeg
     css: styles.css
-    footer: <https://quarto.org>
+    footer: SoftUni AI conference
 resources:
   - slides.pdf
+execute:
+  eval: false
 ---
 
 ## About me
@@ -19,38 +21,291 @@ resources:
 - ML knowledge largely self-taught via free online content + the AI specialisation at the SoftUni.
 - Main hobbies: my kids, some music, local politics
 
-## Revolution in NLP
+## Why do I strongly dislike closed source
+
+Not the spirit of ML.
+Not the spirit of SW.
+
+## Topic today
+
+- Work with a NLP dataset.
+- Discuss central practical NLP concepts.
+- Build a small app.
+
+Amazing and free NLP tools and techniques allow you to capture most of the value most of the time. 
+Subtitle - don't pay OpenAI just yet.
+
+## (Another) Revolution in NLP
+
+- Generative foundational models - GPT-3.5/GPT-4, BARD, LlaMa
+- Focus on text generation/human interactions
+- Semantic search
+- Vector storage / VectorDBs - Pinecone, Weaviate, ChromaDB, etc...
+- Amazing open source tools - Huggingface, LangChain...
+
+## What is a open source language model?
+
+- (Definition)[https://opensource.org/osd/]
+- Open Source is a scale:
+  - (Sentence Transformers)[https://github.com/UKPLab/sentence-transformers/blob/master/LICENSE] are open source (Apache 2.0 License)
+  - Huggingface's BLOOM is (NOT open source)[https://bigscience.huggingface.co/blog/the-bigscience-rail-license]
+  - But OpenAI's GPT-3.5/4 is as closed source as it gets
+    - WTF is that - https://openai.com/policies
+
+
+## Open Source vs. Propriatary 
+
+- ChatGPT is so cool!!!
+  - quasi-monopoly in text generation/interactions
+  - rates changes risk
+  - public to private knowledge (SOF)
+
+## Open Source vs. Propriatary
+
+- Huggingface 
+- Academia 
+- The ML Community TM
 
 ## Open?AI
 
-## Open Source
+My data, my kingdom.
 
-## Text representation
+## Step 1 - Data
 
-## word x word
+- [Recipe Box](https://eightportions.com/datasets/Recipes/) dataset
+- Example:
+```{javascript}
 
-## word x document
+  "p3pKOD6jIHEcjf20CCXohP8uqkG5dGi": {
+    "instructions": "Toss ingredients lightly and spoon into a buttered baking dish. ...",
+    "ingredients": [
+      "1/2 cup celery, finely chopped",
+      "1 small green pepper finely chopped",
+      "..."
+    ],
+    "title": "Grammie Hamblet's Deviled Crab",
+    "picture_link": null
+  }
 
-## dense representations
+```
+
+## Data Preprocessing
+
+```{python}
+#| echo: true
+
+# imports and json files parsing skipped
+# see data.preprocess_data.combine_json_to_dataframe.py
+
+# Combine the data from the three JSON files
+data = {**fn_data, **epi_data, **ar_data}
+
+# Convert the data to a dataframe
+df = pd.DataFrame.from_dict(data, orient='index')
+
+# Add a new column with the concatenated text
+df['full_text'] = ('Recipe title: ' + 
+                        df['title'] + 
+                        '. Ingredients: ' + 
+                        df['ingredients'].apply(lambda x: '; '.join(x)) + 
+                        '. Instructions: ' + 
+                        df['instructions'])
+
+df = (df.
+      # remove adds
+      pipe(remove_advertisement).
+      # drop the picture_link column
+      drop(['picture_link'], axis = 1).
+      # give a num_words estimation
+      assign(num_words = lambda d: d['full_text'].str.split().str.len()).
+      # drop short articles
+      loc[lambda d: d['num_words'] > num_words_cutoff]
+)
+
+```
+
+## Data Preprocessing
+
+```{.python code-line-numbers="10-16|19-22|23-24|25-26"}
+#| echo: true
+
+# imports and json files parsing skipped
+# see data.preprocess_data.combine_json_to_dataframe.py
+
+# Combine the data from the three JSON files
+data = {**fn_data, **epi_data, **ar_data}
+
+# Convert the data to a dataframe
+df = pd.DataFrame.from_dict(data, orient='index')
+
+# Add a new column with the concatenated text
+df['full_text'] = ('Recipe title: ' + 
+                        df['title'] + 
+                        '. Ingredients: ' + 
+                        df['ingredients'].apply(lambda x: '; '.join(x)) + 
+                        '. Instructions: ' + 
+                        df['instructions'])
+
+df = (df.
+      # remove adds
+      pipe(remove_advertisement).
+      # drop the picture_link column
+      drop(['picture_link'], axis = 1).
+      # give a num_words estimation
+      assign(num_words = lambda d: d['full_text'].str.split().str.len()).
+      # drop short articles
+      loc[lambda d: d['num_words'] > num_words_cutoff]
+)
+
+```
+
+## Step 2 - Document embeddings
+
+::: incremental
+::: {style="margin-top: 5em;" .fragment .fade-in}
+- What is a `document`?
+- What is an `embedding`?
+:::
+:::
+
+
+## Documents representations
+
+::: {style="margin-top: 5em;" }
+### Find numerical representation of the documents such that semantically similar articles are close.
+:::
+
+## Document representations
+
+::: {layout="[[-1], [1], [-1]]"}
+![](/images/doc_representations.png){fig-align="center" width=110% height=110%}
+:::
+
+## Document representations
+
+::: {layout="[[-1], [1], [-1]]"}
+![](/images/doc_reps_movies.png){fig-align="center" width=110% height=110%}
+:::
+
+## Term frequency
+
+::: {layout="[[-1], [1], [-1]]"}
+![](/images/term_freq.png){fig-align="center"}
+:::
+
+## Inverse Document Frequency
+
+::: {layout="[[-1], [1], [-1]]"}
+![](/images/idf.png){fig-align="center"}
+:::
+
+## TF-IDF
+
+::: {layout="[[-3, 45,-19, 16, -19], [100]]" layout-valign="top"}
+![](/images/term_freq.png){fig-align="right"}
+
+![](/images/idf.png){fig-align="left"}
+
+![](/images/tf-idf.png)
+:::
+
+## TF-IDF 
+
+```{python}
+#| echo: true
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+vectoriser = TfidfVectorizer(
+    stop_words='english', # default is without it, but this decreases the dictionary size significantly
+    min_df = 2, # Ignore terms that have a document frequency strictly lower than the given threshold. When float, proportion of docs.
+    max_df = 0.95, # ignore terms that have a document frequency strictly higher than the given threshold (corpus-specific stop words).
+    ngram_range=(1,2), # uni and bi-grams
+    max_features=30_000, # unigrams are ca. 22K, get top 8000 bigrams
+    dtype=np.float32 # Reduces the size of the resulting array without much quality sacrifice, default is float64
+)
+
+embeddings = vectoriser.fit_transform(recipe_data.full_text)
+```
+
+
+## Dense document representations
+
+- The model’s only objective is to learn co-occurrence patterns in the sequences it is trained on.
+- Generation - sampling from the model.
+- The sequences can contain anything (text, code, images…).
+- The objective can’t mention specific symbols or relations between symbols (no standard supervision).
+
+## Sentence Transformers
+
+::: {style="text-align: center; margin-top: 4em"}
+```{python}
+#| echo: true
+from sentence_transformers import SentenceTransformer
+
+# download model
+vectoriser = SentenceTransformer("all-MiniLM-L12-v2")
+# ensure that the model vectorises up to 512 tokens
+vectoriser.max_seq_length = 512
+
+docs = [rec for rec in recipe_data.full_text]
+embeddings = vectoriser.encode(docs, show_progress_bar=True)
+```
+:::
+
+## Sentence Transformers
+
+A family of language models finetuned to produce document\* embeddings
+
+::: {style="text-align: center; margin-top: 1em"}
+[Pretrained Sentence Transformers](https://www.sbert.net/docs/pretrained_models.html){preview-link="true" style="text-align: center"}
+:::
+
+::: footer
+\*Up to 512 tokens (ca. 400 words)
+:::
 
 ## Semantic Similarity
 
 ## Vector comparison
 
-## Document embeddings tools
-
-- TfIDF
-- Pooled word embeddings
-- Sentence Transformers
-- InstructorEmbeddings
-
 ## Embeddings visualizations
 
+::: {style="text-align: center; margin-top: 4em"}
 ```{python}
-#| echo: false
+#| echo: true
+
 !python -m bulk text data/bulk_st.csv
 ```
+:::
 
-## 
+## Topic modelling with BERTopic
+
+```{python}
+#| echo: true
+
+vectoriser_model = CountVectorizer(stop_words="english")
+hdbscan_model = HDBSCAN(min_cluster_size=10, 
+                        min_samples = 1, # This to reduce outliers as much as possible
+                        cluster_selection_epsilon = 0.1, # Reduce number of clusters
+                        metric='euclidean', 
+                        prediction_data=True)
+
+sentence_model = SentenceTransformer("all-MiniLM-L12-v2")
+sentence_model.max_seq_length = 512
+
+representation_model = MaximalMarginalRelevance(diversity=0.2)
+
+topic_model = BERTopic(
+    vectorizer_model=vectoriser_model,
+    hdbscan_model = hdbscan_model,
+    min_topic_size=20,
+    n_gram_range=(1, 2),
+    embedding_model=sentence_model, 
+    representation_model=representation_model
+    )
+
+topics, probs = topic_model.fit_transform(docs, embeddings)
+```
 
 

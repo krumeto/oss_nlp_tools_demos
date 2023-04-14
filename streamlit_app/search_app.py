@@ -1,4 +1,5 @@
 from sentence_transformers import SentenceTransformer
+from transformers import pipeline
 from sentence_transformers.util import semantic_search
 from data.preprocess_data import combine_json_to_dataframe
 
@@ -11,6 +12,14 @@ def load_model():
     model = SentenceTransformer("all-MiniLM-L12-v2")
     model.max_seq_length = 512
     return(model)
+
+# Define functions for caching
+@st.cache_resource
+def load_qa_model(model_name = "deepset/roberta-base-squad2"):
+    qa_model = pipeline("question-answering", 
+                        model = model_name, 
+                        tokenizer = model_name)
+    return(qa_model)
 
 @st.cache_data
 def load_data():
@@ -42,7 +51,7 @@ model = load_model()
 
 ## Provide input options in the side panel
 
-option = st.sidebar.selectbox("Select Search Mode", ("Choose recipe by index", "Enter text to search"))
+option = st.sidebar.selectbox("Select Search Mode", ("Choose recipe by index", "Enter free text to search", "Try Q&A"))
 
 ### Option 1 - choose a recipe by its index
 if option == "Choose recipe by index":
@@ -71,7 +80,7 @@ if option == "Choose recipe by index":
     st.dataframe(recipe_data.iloc[collect_idx_as_you_loop,:])
 
 ### Option 2 - Enter a text (recipe or ingredients) and vectorise with SentenceTransformer
-elif option == "Enter text to search":
+elif option == "Enter free text to search":
     search_text = st.sidebar.text_input("Enter recipe or ingredients")
     # Adding an option for a vector to substract from the main one
     text_to_exclude = st.sidebar.text_input("Ingredients to exclude, if any")
@@ -121,3 +130,47 @@ elif option == "Enter text to search":
             
         st.write('Here are the recipes:')
         st.dataframe(recipe_data.iloc[collect_idx_as_you_loop,:])
+        
+        
+### Option 3 - Enter a question and get an answer
+elif option == "Try Q&A":
+    question = st.sidebar.text_input("Ask a question:")
+    # Add an option to use multiple results
+    n_hits_to_use = st.sidebar.number_input(label='Number of hits to use', value=1)
+    
+    if question:
+        if len(question) < 100:
+            st.subheader(f"Query is **{question}**")
+        else:
+            st.subheader(f"Query is **{question[:100].strip()}...**")
+        
+        # vectorise the query
+        query_embedding = model.encode(question)
+        results = semantic_search(query_embedding, embeddings, top_k=n_hits_to_use)
+
+        collect_idx_as_you_loop = []
+        scores = []
+        full_text = ""
+        for hit in results[0]:
+            idx = hit['corpus_id']
+            score = hit['score']
+            full_text = full_text + "\n" + recipe_data['full_text'].iloc[idx].strip()
+            collect_idx_as_you_loop.append(idx)
+            scores.append(score)
+        
+        qa_model = load_qa_model()
+        answers = qa_model(
+            question = question,
+            context = full_text.strip(),         
+            top_k = 3,
+            max_answer_len = 50,
+            max_seq_length = 2000,
+            handle_impossible_answer = True
+        )
+        
+        for idx, answer in enumerate(answers):
+            st.write(f"**The {idx+1} answer is {answer['answer']}. Confidence score {answer['score']:.4f}**")
+        
+        st.write('Based on the following recipes:')
+        st.dataframe(recipe_data.iloc[collect_idx_as_you_loop,:].assign(search_score = scores))        
+        

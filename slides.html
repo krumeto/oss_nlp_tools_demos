@@ -398,46 +398,60 @@
 <section id="about-me" class="slide level2">
 <h2>About me</h2>
 <ul>
-<li>Joined FT as Data Scientist in 2021</li>
-<li>Past jobs as DS at Amplify Analytics, before that Account &amp; Ops Management at HPI</li>
-<li>ML knowledge largely self-taught via free online content + the AI specialisation at the SoftUni.</li>
-<li>Main hobbies: my kids, some music, local politics</li>
+<li class="fragment">Joined Financial Times as Data Scientist in 2021</li>
+<li class="fragment">Past jobs as DS at Amplify Analytics, before that Account &amp; Ops Management at HPI</li>
+<li class="fragment">ML knowledge largely self-taught via free online content + the AI specialisation at the SoftUni.</li>
+<li class="fragment">Main hobbies: my kids, some music, local politics</li>
 </ul>
-</section>
-<section id="why-do-i-strongly-dislike-closed-source" class="slide level2">
-<h2>Why do I strongly dislike closed source</h2>
-<p>Not the spirit of ML. Not the spirit of SW.</p>
 </section>
 <section id="topic-today" class="slide level2">
 <h2>Topic today</h2>
 <ul>
-<li>Work with a NLP dataset.</li>
-<li>Discuss central practical NLP concepts.</li>
-<li>Build a small app.</li>
+<li class="fragment">Work with a NLP dataset.</li>
+<li class="fragment">Discuss central practical NLP concepts.</li>
+<li class="fragment">Build a small app.</li>
 </ul>
-<p>Amazing and free NLP tools and techniques allow you to capture most of the value most of the time. Subtitle - don’t pay OpenAI just yet.</p>
+</section>
+<section class="slide level2">
+
+<div style="margin-top: 3em">
+<h3 id="value-in-nlp-can-be-created-with-open-source-only.">Value in NLP can be created with Open Source only.</h3>
+<h3 id="small-scale-is-fine.">Small scale is fine.</h3>
+<h3 id="search-is-more-important-than-chat.-still.">Search is more important than chat. Still.</h3>
+</div>
+</section>
+<section id="why-do-i-strongly-dislike-closed-source" class="slide level2">
+<h2>Why do I strongly dislike closed source</h2>
+<div>
+<ul>
+<li class="fragment"><strong>Not the spirit of ML.</strong></li>
+<li class="fragment"><strong>Not the spirit of SW.</strong></li>
+</ul>
+</div>
 </section>
 <section id="another-revolution-in-nlp" class="slide level2">
 <h2>(Another) Revolution in NLP</h2>
+<div>
 <ul>
-<li>Generative foundational models - GPT-3.5/GPT-4, BARD, LlaMa</li>
-<li>Focus on text generation/human interactions</li>
-<li>Semantic search</li>
-<li>Vector storage / VectorDBs - Pinecone, Weaviate, ChromaDB, etc…</li>
-<li>Amazing open source tools - Huggingface, LangChain…</li>
+<li class="fragment">Generative foundational models - GPT-3.5/GPT-4, BARD, LlaMa</li>
+<li class="fragment">Focus on text generation/human interactions</li>
+<li class="fragment">Semantic search</li>
+<li class="fragment">Vector storage / VectorDBs - Pinecone, Weaviate, ChromaDB, etc…</li>
+<li class="fragment">Amazing open source tools - Huggingface, LangChain…</li>
 </ul>
+</div>
 </section>
 <section id="what-is-a-open-source-language-model" class="slide level2">
 <h2>What is a open source language model?</h2>
 <ul>
-<li>(Definition)[https://opensource.org/osd/]</li>
-<li>Open Source is a scale:
+<li class="fragment"><a href="https://opensource.org/osd/">Definition</a></li>
+<li class="fragment">Open Source is a scale:
 <ul>
-<li>(Sentence Transformers)[https://github.com/UKPLab/sentence-transformers/blob/master/LICENSE] are open source (Apache 2.0 License)</li>
-<li>Huggingface’s BLOOM is (NOT open source)[https://bigscience.huggingface.co/blog/the-bigscience-rail-license]</li>
-<li>But OpenAI’s GPT-3.5/4 is as closed source as it gets
+<li class="fragment"><a href="https://github.com/UKPLab/sentence-transformers/blob/master/LICENSE">Sentence Transformers</a> are open source (Apache 2.0 License)</li>
+<li class="fragment">Huggingface’s BLOOM is <a href="https://bigscience.huggingface.co/blog/the-bigscience-rail-license">NOT open source</a></li>
+<li class="fragment">But OpenAI’s GPT-3.5/4 is as closed source as it gets
 <ul>
-<li>WTF is that - https://openai.com/policies</li>
+<li class="fragment">WTF is that - https://openai.com/policies</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -445,20 +459,20 @@
 <section id="open-source-vs.-propriatary" class="slide level2">
 <h2>Open Source vs.&nbsp;Propriatary</h2>
 <ul>
-<li>ChatGPT is so cool!!!
+<li class="fragment">ChatGPT is so cool!!!
 <ul>
-<li>quasi-monopoly in text generation/interactions</li>
-<li>rates changes risk</li>
-<li>public to private knowledge (SOF)</li>
+<li class="fragment">quasi-monopoly in text generation/interactions</li>
+<li class="fragment">rates changes risk</li>
+<li class="fragment">public to private knowledge (SOF)</li>
 </ul></li>
 </ul>
 </section>
 <section id="open-source-vs.-propriatary-1" class="slide level2">
 <h2>Open Source vs.&nbsp;Propriatary</h2>
 <ul>
-<li>Huggingface</li>
-<li>Academia</li>
-<li>The ML Community TM</li>
+<li class="fragment">Huggingface</li>
+<li class="fragment">Academia</li>
+<li class="fragment">The ML Community TM</li>
 </ul>
 </section>
 <section id="openai" class="slide level2">
@@ -468,87 +482,76 @@
 <section id="step-1---data" class="slide level2">
 <h2>Step 1 - Data</h2>
 <ul>
-<li><a href="https://eightportions.com/datasets/Recipes/">Recipe Box</a> dataset</li>
-<li>Example:</li>
+<li class="fragment"><a href="https://eightportions.com/datasets/Recipes/">Recipe Box</a> dataset</li>
+<li class="fragment">Example:</li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {javascript} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a></span>
-<span id="cb1-2"><a href="#cb1-2"></a>  "p3pKOD6jIHEcjf20CCXohP8uqkG5dGi": {</span>
-<span id="cb1-3"><a href="#cb1-3"></a>    "instructions": "Toss ingredients lightly and spoon into a buttered baking dish. ...",</span>
-<span id="cb1-4"><a href="#cb1-4"></a>    "ingredients": [</span>
-<span id="cb1-5"><a href="#cb1-5"></a>      "1/2 cup celery, finely chopped",</span>
-<span id="cb1-6"><a href="#cb1-6"></a>      "1 small green pepper finely chopped",</span>
-<span id="cb1-7"><a href="#cb1-7"></a>      "..."</span>
-<span id="cb1-8"><a href="#cb1-8"></a>    ],</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    "title": "Grammie Hamblet's Deviled Crab",</span>
-<span id="cb1-10"><a href="#cb1-10"></a>    "picture_link": null</span>
-<span id="cb1-11"><a href="#cb1-11"></a>  }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="data-preprocessing" class="slide level2">
 <h2>Data Preprocessing</h2>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># imports and json files parsing skipped</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># Combine the data from the three JSON files</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># Convert the data to a dataframe</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
-<span id="cb2-9"><a href="#cb2-9"></a></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># Add a new column with the concatenated text</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
-<span id="cb2-12"><a href="#cb2-12"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
-<span id="cb2-13"><a href="#cb2-13"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
-<span id="cb2-14"><a href="#cb2-14"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
-<span id="cb2-15"><a href="#cb2-15"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
-<span id="cb2-16"><a href="#cb2-16"></a>                        df[<span class="st">'instructions'</span>])</span>
-<span id="cb2-17"><a href="#cb2-17"></a></span>
-<span id="cb2-18"><a href="#cb2-18"></a>df <span class="op">=</span> (df.</span>
-<span id="cb2-19"><a href="#cb2-19"></a>      <span class="co"># remove adds</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a>      pipe(remove_advertisement).</span>
-<span id="cb2-21"><a href="#cb2-21"></a>      <span class="co"># drop the picture_link column</span></span>
-<span id="cb2-22"><a href="#cb2-22"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
-<span id="cb2-23"><a href="#cb2-23"></a>      <span class="co"># give a num_words estimation</span></span>
-<span id="cb2-24"><a href="#cb2-24"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
-<span id="cb2-25"><a href="#cb2-25"></a>      <span class="co"># drop short articles</span></span>
-<span id="cb2-26"><a href="#cb2-26"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
-<span id="cb2-27"><a href="#cb2-27"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># imports and json files parsing skipped</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Combine the data from the three JSON files</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Convert the data to a dataframe</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># Add a new column with the concatenated text</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
+<span id="cb1-12"><a href="#cb1-12"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
+<span id="cb1-13"><a href="#cb1-13"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
+<span id="cb1-14"><a href="#cb1-14"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
+<span id="cb1-15"><a href="#cb1-15"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
+<span id="cb1-16"><a href="#cb1-16"></a>                        df[<span class="st">'instructions'</span>])</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a>df <span class="op">=</span> (df.</span>
+<span id="cb1-19"><a href="#cb1-19"></a>      <span class="co"># remove adds</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>      pipe(remove_advertisement).</span>
+<span id="cb1-21"><a href="#cb1-21"></a>      <span class="co"># drop the picture_link column</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
+<span id="cb1-23"><a href="#cb1-23"></a>      <span class="co"># give a num_words estimation</span></span>
+<span id="cb1-24"><a href="#cb1-24"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
+<span id="cb1-25"><a href="#cb1-25"></a>      <span class="co"># drop short articles</span></span>
+<span id="cb1-26"><a href="#cb1-26"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
+<span id="cb1-27"><a href="#cb1-27"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data-preprocessing-1" class="slide level2">
 <h2>Data Preprocessing</h2>
-<div class="sourceCode" id="cb3" data-code-line-numbers="10-16|19-22|23-24|25-26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># imports and json files parsing skipped</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># Combine the data from the three JSON files</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
-<span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># Convert the data to a dataframe</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
-<span id="cb3-11"><a href="#cb3-11"></a></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co"># Add a new column with the concatenated text</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
-<span id="cb3-14"><a href="#cb3-14"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
-<span id="cb3-15"><a href="#cb3-15"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
-<span id="cb3-16"><a href="#cb3-16"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
-<span id="cb3-17"><a href="#cb3-17"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
-<span id="cb3-18"><a href="#cb3-18"></a>                        df[<span class="st">'instructions'</span>])</span>
-<span id="cb3-19"><a href="#cb3-19"></a></span>
-<span id="cb3-20"><a href="#cb3-20"></a>df <span class="op">=</span> (df.</span>
-<span id="cb3-21"><a href="#cb3-21"></a>      <span class="co"># remove adds</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a>      pipe(remove_advertisement).</span>
-<span id="cb3-23"><a href="#cb3-23"></a>      <span class="co"># drop the picture_link column</span></span>
-<span id="cb3-24"><a href="#cb3-24"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
-<span id="cb3-25"><a href="#cb3-25"></a>      <span class="co"># give a num_words estimation</span></span>
-<span id="cb3-26"><a href="#cb3-26"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
-<span id="cb3-27"><a href="#cb3-27"></a>      <span class="co"># drop short articles</span></span>
-<span id="cb3-28"><a href="#cb3-28"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
-<span id="cb3-29"><a href="#cb3-29"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2" data-code-line-numbers="10-18|19-22|23-24|25-26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># imports and json files parsing skipped</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># Combine the data from the three JSON files</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># Convert the data to a dataframe</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co"># Add a new column with the concatenated text</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
+<span id="cb2-14"><a href="#cb2-14"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
+<span id="cb2-15"><a href="#cb2-15"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
+<span id="cb2-16"><a href="#cb2-16"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
+<span id="cb2-17"><a href="#cb2-17"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
+<span id="cb2-18"><a href="#cb2-18"></a>                        df[<span class="st">'instructions'</span>])</span>
+<span id="cb2-19"><a href="#cb2-19"></a></span>
+<span id="cb2-20"><a href="#cb2-20"></a>df <span class="op">=</span> (df.</span>
+<span id="cb2-21"><a href="#cb2-21"></a>      <span class="co"># remove adds</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a>      pipe(remove_advertisement).</span>
+<span id="cb2-23"><a href="#cb2-23"></a>      <span class="co"># drop the picture_link column</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
+<span id="cb2-25"><a href="#cb2-25"></a>      <span class="co"># give a num_words estimation</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
+<span id="cb2-27"><a href="#cb2-27"></a>      <span class="co"># drop short articles</span></span>
+<span id="cb2-28"><a href="#cb2-28"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
+<span id="cb2-29"><a href="#cb2-29"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="step-2---document-embeddings" class="slide level2">
-<h2>Step 2 - Document embeddings</h2>
+<h2>Step 2 - Document Embeddings</h2>
 <div>
 <div class="fragment fade-in" style="margin-top: 5em;">
 <ul>
@@ -558,10 +561,11 @@
 </div>
 </div>
 </section>
-<section id="documents-representations" class="slide level2">
-<h2>Documents representations</h2>
+<section id="document-embeddings-goal" class="slide level2">
+<h2>Document Embeddings Goal</h2>
 <section id="find-numerical-representation-of-the-documents-such-that-semantically-similar-articles-are-close." style="margin-top: 5em;">
 <h3>Find numerical representation of the documents such that semantically similar articles are close.</h3>
+<h4 id="and-semantically-dissimilar-articles---far.">And semantically dissimilar articles - far.</h4>
 </section>
 </section>
 <section id="document-representations" class="slide level2">
@@ -602,8 +606,8 @@
 </div>
 </div>
 </section>
-<section id="term-frequency" class="slide level2">
-<h2>Term frequency</h2>
+<section id="old-school---term-frequency" class="slide level2">
+<h2>Old School - Term frequency</h2>
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
@@ -621,8 +625,8 @@
 </div>
 </div>
 </section>
-<section id="inverse-document-frequency" class="slide level2">
-<h2>Inverse Document Frequency</h2>
+<section id="old-school---inverse-document-frequency" class="slide level2">
+<h2>Old School - Inverse Document Frequency</h2>
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
@@ -640,8 +644,8 @@
 </div>
 </div>
 </section>
-<section id="tf-idf" class="slide level2">
-<h2>TF-IDF</h2>
+<section id="old-school---tf-idf" class="slide level2">
+<h2>Old School - TF-IDF</h2>
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.9%;justify-content: center;">
@@ -675,46 +679,46 @@
 </div>
 </div>
 </section>
-<section id="tf-idf-1" class="slide level2">
-<h2>TF-IDF</h2>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a>vectoriser <span class="op">=</span> TfidfVectorizer(</span>
-<span id="cb4-5"><a href="#cb4-5"></a>    stop_words<span class="op">=</span><span class="st">'english'</span>, <span class="co"># default is without it, but this decreases the dictionary size significantly</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>    min_df <span class="op">=</span> <span class="dv">2</span>, <span class="co"># Ignore terms that have a document frequency strictly lower than the given threshold. When float, proportion of docs.</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a>    max_df <span class="op">=</span> <span class="fl">0.95</span>, <span class="co"># ignore terms that have a document frequency strictly higher than the given threshold (corpus-specific stop words).</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>    ngram_range<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="co"># uni and bi-grams</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>    max_features<span class="op">=</span><span class="dv">30_000</span>, <span class="co"># unigrams are ca. 22K, get top 8000 bigrams</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a>    dtype<span class="op">=</span>np.float32 <span class="co"># Reduces the size of the resulting array without much quality sacrifice, default is float64</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a>)</span>
-<span id="cb4-12"><a href="#cb4-12"></a></span>
-<span id="cb4-13"><a href="#cb4-13"></a>embeddings <span class="op">=</span> vectoriser.fit_transform(recipe_data.full_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="old-school---tf-idf-1" class="slide level2">
+<h2>Old School - TF-IDF</h2>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>vectoriser <span class="op">=</span> TfidfVectorizer(</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    stop_words<span class="op">=</span><span class="st">'english'</span>, <span class="co"># default is without it, but this decreases the dictionary size significantly</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>    min_df <span class="op">=</span> <span class="dv">2</span>, <span class="co"># Ignore terms that have a document frequency strictly lower than the given threshold. When float, proportion of docs.</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>    max_df <span class="op">=</span> <span class="fl">0.95</span>, <span class="co"># ignore terms that have a document frequency strictly higher than the given threshold (corpus-specific stop words).</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>    ngram_range<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="co"># uni and bi-grams</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>    max_features<span class="op">=</span><span class="dv">30_000</span>, <span class="co"># unigrams are ca. 22K, get top 8000 bigrams</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>    dtype<span class="op">=</span>np.float32 <span class="co"># Reduces the size of the resulting array without much quality sacrifice, default is float64</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a>embeddings <span class="op">=</span> vectoriser.fit_transform(recipe_data.full_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="dense-document-representations" class="slide level2">
 <h2>Dense document representations</h2>
 <ul>
-<li>The model’s only objective is to learn co-occurrence patterns in the sequences it is trained on.</li>
-<li>Generation - sampling from the model.</li>
-<li>The sequences can contain anything (text, code, images…).</li>
-<li>The objective can’t mention specific symbols or relations between symbols (no standard supervision).</li>
+<li class="fragment">The model’s only objective is to learn co-occurrence patterns in the sequences it is trained on.</li>
+<li class="fragment">Generation - sampling from the model.</li>
+<li class="fragment">The sequences can contain anything (text, code, images…).</li>
+<li class="fragment">The objective can’t mention specific symbols or relations between symbols (no standard supervision).</li>
 </ul>
 </section>
 <section id="sentence-transformers" class="slide level2">
 <h2>Sentence Transformers</h2>
 <div style="text-align: center; margin-top: 4em">
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
-<span id="cb5-2"><a href="#cb5-2"></a></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co"># download model</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>vectoriser <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># ensure that the model vectorises up to 512 tokens</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a>vectoriser.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a></span>
-<span id="cb5-8"><a href="#cb5-8"></a>docs <span class="op">=</span> [rec <span class="cf">for</span> rec <span class="kw">in</span> recipe_data.full_text]</span>
-<span id="cb5-9"><a href="#cb5-9"></a>embeddings <span class="op">=</span> vectoriser.encode(docs, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co"># download model</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>vectoriser <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co"># ensure that the model vectorises up to 512 tokens</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>vectoriser.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a>docs <span class="op">=</span> [rec <span class="cf">for</span> rec <span class="kw">in</span> recipe_data.full_text]</span>
+<span id="cb4-9"><a href="#cb4-9"></a>embeddings <span class="op">=</span> vectoriser.encode(docs, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
@@ -737,36 +741,36 @@
 <section id="embeddings-visualizations" class="slide level2">
 <h2>Embeddings visualizations</h2>
 <div style="text-align: center; margin-top: 4em">
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="op">!</span>python <span class="op">-</span>m bulk text data<span class="op">/</span>bulk_st.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="op">!</span>python <span class="op">-</span>m bulk text data<span class="op">/</span>bulk_st.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
 <section id="topic-modelling-with-bertopic" class="slide level2">
 <h2>Topic modelling with BERTopic</h2>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>vectoriser_model <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span><span class="st">"english"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a>hdbscan_model <span class="op">=</span> HDBSCAN(min_cluster_size<span class="op">=</span><span class="dv">10</span>, </span>
-<span id="cb7-3"><a href="#cb7-3"></a>                        min_samples <span class="op">=</span> <span class="dv">1</span>, <span class="co"># This to reduce outliers as much as possible</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a>                        cluster_selection_epsilon <span class="op">=</span> <span class="fl">0.1</span>, <span class="co"># Reduce number of clusters</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a>                        metric<span class="op">=</span><span class="st">'euclidean'</span>, </span>
-<span id="cb7-6"><a href="#cb7-6"></a>                        prediction_data<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb7-7"><a href="#cb7-7"></a></span>
-<span id="cb7-8"><a href="#cb7-8"></a>sentence_model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
-<span id="cb7-9"><a href="#cb7-9"></a>sentence_model.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a></span>
-<span id="cb7-11"><a href="#cb7-11"></a>representation_model <span class="op">=</span> MaximalMarginalRelevance(diversity<span class="op">=</span><span class="fl">0.2</span>)</span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a>topic_model <span class="op">=</span> BERTopic(</span>
-<span id="cb7-14"><a href="#cb7-14"></a>    vectorizer_model<span class="op">=</span>vectoriser_model,</span>
-<span id="cb7-15"><a href="#cb7-15"></a>    hdbscan_model <span class="op">=</span> hdbscan_model,</span>
-<span id="cb7-16"><a href="#cb7-16"></a>    min_topic_size<span class="op">=</span><span class="dv">20</span>,</span>
-<span id="cb7-17"><a href="#cb7-17"></a>    n_gram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb7-18"><a href="#cb7-18"></a>    embedding_model<span class="op">=</span>sentence_model, </span>
-<span id="cb7-19"><a href="#cb7-19"></a>    representation_model<span class="op">=</span>representation_model</span>
-<span id="cb7-20"><a href="#cb7-20"></a>    )</span>
-<span id="cb7-21"><a href="#cb7-21"></a></span>
-<span id="cb7-22"><a href="#cb7-22"></a>topics, probs <span class="op">=</span> topic_model.fit_transform(docs, embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>vectoriser_model <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span><span class="st">"english"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>hdbscan_model <span class="op">=</span> HDBSCAN(min_cluster_size<span class="op">=</span><span class="dv">10</span>, </span>
+<span id="cb6-3"><a href="#cb6-3"></a>                        min_samples <span class="op">=</span> <span class="dv">1</span>, <span class="co"># This to reduce outliers as much as possible</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>                        cluster_selection_epsilon <span class="op">=</span> <span class="fl">0.1</span>, <span class="co"># Reduce number of clusters</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>                        metric<span class="op">=</span><span class="st">'euclidean'</span>, </span>
+<span id="cb6-6"><a href="#cb6-6"></a>                        prediction_data<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a>sentence_model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9"></a>sentence_model.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a>representation_model <span class="op">=</span> MaximalMarginalRelevance(diversity<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a>topic_model <span class="op">=</span> BERTopic(</span>
+<span id="cb6-14"><a href="#cb6-14"></a>    vectorizer_model<span class="op">=</span>vectoriser_model,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    hdbscan_model <span class="op">=</span> hdbscan_model,</span>
+<span id="cb6-16"><a href="#cb6-16"></a>    min_topic_size<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb6-17"><a href="#cb6-17"></a>    n_gram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    embedding_model<span class="op">=</span>sentence_model, </span>
+<span id="cb6-19"><a href="#cb6-19"></a>    representation_model<span class="op">=</span>representation_model</span>
+<span id="cb6-20"><a href="#cb6-20"></a>    )</span>
+<span id="cb6-21"><a href="#cb6-21"></a></span>
+<span id="cb6-22"><a href="#cb6-22"></a>topics, probs <span class="op">=</span> topic_model.fit_transform(docs, embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img src="images/nlp_tools.jpeg" class="slide-logo r-stretch"><div class="footer footer-default">

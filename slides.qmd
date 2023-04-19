@@ -3,7 +3,9 @@ title: "Going far with open source tools in NLP"
 subtitle: "Krum Arnaudov, Data Scientist at Financial Times, 2023"
 format:
   revealjs: 
+    incremental: true
     slide-number: true
+    theme: serif
     preview-links: auto
     logo: images/nlp_tools.jpeg
     css: styles.css
@@ -16,15 +18,10 @@ execute:
 
 ## About me
 
-- Joined FT as Data Scientist in 2021
+- Joined Financial Times as Data Scientist in 2021
 - Past jobs as DS at Amplify Analytics, before that Account & Ops Management at HPI
 - ML knowledge largely self-taught via free online content + the AI specialisation at the SoftUni.
 - Main hobbies: my kids, some music, local politics
-
-## Why do I strongly dislike closed source
-
-Not the spirit of ML.
-Not the spirit of SW.
 
 ## Topic today
 
@@ -32,23 +29,39 @@ Not the spirit of SW.
 - Discuss central practical NLP concepts.
 - Build a small app.
 
-Amazing and free NLP tools and techniques allow you to capture most of the value most of the time. 
-Subtitle - don't pay OpenAI just yet.
+---
+
+
+::: {style="margin-top: 3em"}
+### Value in NLP can be created with Open Source only.
+### Small scale is fine.
+### Search is more important than chat. Still.
+:::
+
+## Why do I strongly dislike closed source
+
+::: incremental
+- **Not the spirit of ML.**
+- **Not the spirit of SW.**
+:::
+
 
 ## (Another) Revolution in NLP
 
+::: incremental
 - Generative foundational models - GPT-3.5/GPT-4, BARD, LlaMa
 - Focus on text generation/human interactions
 - Semantic search
 - Vector storage / VectorDBs - Pinecone, Weaviate, ChromaDB, etc...
 - Amazing open source tools - Huggingface, LangChain...
+:::
 
 ## What is a open source language model?
 
-- (Definition)[https://opensource.org/osd/]
+- [Definition](https://opensource.org/osd/)
 - Open Source is a scale:
-  - (Sentence Transformers)[https://github.com/UKPLab/sentence-transformers/blob/master/LICENSE] are open source (Apache 2.0 License)
-  - Huggingface's BLOOM is (NOT open source)[https://bigscience.huggingface.co/blog/the-bigscience-rail-license]
+  - [Sentence Transformers](https://github.com/UKPLab/sentence-transformers/blob/master/LICENSE) are open source (Apache 2.0 License)
+  - Huggingface's BLOOM is [NOT open source](https://bigscience.huggingface.co/blog/the-bigscience-rail-license)
   - But OpenAI's GPT-3.5/4 is as closed source as it gets
     - WTF is that - https://openai.com/policies
 
@@ -74,7 +87,7 @@ My data, my kingdom.
 
 - [Recipe Box](https://eightportions.com/datasets/Recipes/) dataset
 - Example:
-```{javascript}
+```{python}
 
   "p3pKOD6jIHEcjf20CCXohP8uqkG5dGi": {
     "instructions": "Toss ingredients lightly and spoon into a buttered baking dish. ...",
@@ -126,7 +139,7 @@ df = (df.
 
 ## Data Preprocessing
 
-```{.python code-line-numbers="10-16|19-22|23-24|25-26"}
+```{.python code-line-numbers="10-18|19-22|23-24|25-26"}
 #| echo: true
 
 # imports and json files parsing skipped
@@ -159,7 +172,7 @@ df = (df.
 
 ```
 
-## Step 2 - Document embeddings
+## Step 2 - Document Embeddings
 
 ::: incremental
 ::: {style="margin-top: 5em;" .fragment .fade-in}
@@ -169,10 +182,11 @@ df = (df.
 :::
 
 
-## Documents representations
+## Document Embeddings Goal 
 
 ::: {style="margin-top: 5em;" }
 ### Find numerical representation of the documents such that semantically similar articles are close.
+#### And semantically dissimilar articles - far. 
 :::
 
 ## Document representations
@@ -187,19 +201,20 @@ df = (df.
 ![](/images/doc_reps_movies.png){fig-align="center" width=110% height=110%}
 :::
 
-## Term frequency
+
+## Old School - Term frequency
 
 ::: {layout="[[-1], [1], [-1]]"}
 ![](/images/term_freq.png){fig-align="center"}
 :::
 
-## Inverse Document Frequency
+## Old School - Inverse Document Frequency
 
 ::: {layout="[[-1], [1], [-1]]"}
 ![](/images/idf.png){fig-align="center"}
 :::
 
-## TF-IDF
+## Old School - TF-IDF
 
 ::: {layout="[[-3, 45,-19, 16, -19], [100]]" layout-valign="top"}
 ![](/images/term_freq.png){fig-align="right"}
@@ -209,7 +224,7 @@ df = (df.
 ![](/images/tf-idf.png)
 :::
 
-## TF-IDF 
+## Old School - TF-IDF 
 
 ```{python}
 #| echo: true

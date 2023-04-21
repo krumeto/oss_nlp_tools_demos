@@ -224,6 +224,17 @@ df = (df.
 ![](/images/tf-idf.png)
 :::
 
+## Common Sparse Representation Issues
+
+Frequently mentioned:
+- Lexical gap: UK, United Kingdom, England
+- Word order not preserved
+
+Actual issues:
+- Requires a “vocabulary” of size (n_training docs, nr_tokens_retained) in memory e.g. (50 000, 100 000)
+- Huge vectors - tough for clustering tasks
+
+
 ## Old School - TF-IDF 
 
 ```{python}
@@ -246,12 +257,73 @@ embeddings = vectoriser.fit_transform(recipe_data.full_text)
 
 ## Dense document representations
 
-- The model’s only objective is to learn co-occurrence patterns in the sequences it is trained on.
-- Generation - sampling from the model.
-- The sequences can contain anything (text, code, images…).
-- The objective can’t mention specific symbols or relations between symbols (no standard supervision).
+``` tex
+f(Text) -> Representation^n
+```
+
+- `n` dimensional representation
+- Find function `f` such that semantically similar text is close
+
+::: footer
+Source: Nils Reimers, Introduction to Dense Text Representations
+:::
+
+## What does semantically similar mean?
+
+![](/images/sem_similarity.png)
+
+::: footer
+Based on: Nils Reimers, Introduction to Dense Text Representations
+:::
 
 ## Sentence Transformers
+
+![](/images/sbert.png)
+
+## Loss functions
+
+![](https://huggingface.co/blog/assets/95_training_st_models/datasets_table.png)
+
+## SentenceTransformers - Triplet loss example
+
+```python
+{'set':
+ {'query': 'What can I do to get better grades?',
+  'pos': 
+['How do I improve my grades?'],
+  'neg': 
+['Why do I get bad grades even though I study a lot?',
+   'How can I get better grades in maths?',
+   'How serious is forging high school grades?']
+}
+}
+```
+
+![](/images/triplet_loss.png)
+
+::: footer
+Nils Reimers, Introduction to Dense Text Representations
+:::
+
+## Sentence Transformers - Choices
+
+A family of language models finetuned to produce document\* embeddings
+
+::: {style="text-align: center; margin-top: 1em"}
+[Pretrained Sentence Transformers](https://www.sbert.net/docs/pretrained_models.html){preview-link="true" style="text-align: center"}
+:::
+
+::: footer
+\*Up to 512 tokens (ca. 400 words)
+:::
+
+## Choices - MTEB
+
+Massive Text Embedding Benchmark ([MTEB](https://huggingface.co/spaces/mteb/leaderboard){preview-link="true" style="text-align: center"})
+
+![](/images/mteb_2.png)
+
+## Sentence Transformers API
 
 ::: {style="text-align: center; margin-top: 4em"}
 ```{python}
@@ -268,31 +340,84 @@ embeddings = vectoriser.encode(docs, show_progress_bar=True)
 ```
 :::
 
-## Sentence Transformers
-
-A family of language models finetuned to produce document\* embeddings
-
-::: {style="text-align: center; margin-top: 1em"}
-[Pretrained Sentence Transformers](https://www.sbert.net/docs/pretrained_models.html){preview-link="true" style="text-align: center"}
-:::
-
-::: footer
-\*Up to 512 tokens (ca. 400 words)
-:::
-
-## Semantic Similarity
-
-## Vector comparison
+# How do you know if you've done a good job?
 
 ## Embeddings visualizations
+
+1. Reduce dimensions to 2 (UMAP seems to be the best option, TruncatedSVD for sparse data)
+2. Create an interactive plot:
+  
+  - good options - altair, bokeh, plotly
+
+## Embeddings visualizations with Bulk
+
+- [Bulk](https://github.com/koaning/bulk) - visualisation and initial data labelling in one.
+- Works with images too!
 
 ::: {style="text-align: center; margin-top: 4em"}
 ```{python}
 #| echo: true
-
 !python -m bulk text data/bulk_st.csv
 ```
 :::
+
+## Simple Semantic Search
+
+```{python}
+def get_most_similar_doc(text, vectorized_corpus, original_data, vectoriser=vectoriser, top_n = 5):
+    # encodes the input text
+    new_doc_vector = vectoriser.encode(text)
+    # calculates the cosine similarity between the new text embedding 
+    # and all other vectors
+    sim = cosine_similarity(X = vectorized_corpus, Y = new_doc_vector).flatten()
+    # gets the indices of the top_n highest similarities
+    argmax = np.argpartition(sim, -top_n)[-top_n:]
+    # returns the original data filtered for the top results
+    return(
+        (original_data.
+         iloc[argmax].
+         # adds the cosine similarity as a column
+         assign(similarity = sim[argmax]).
+         loc[:, ['title', 'ingredients', 'similarity']].
+         sort_values('similarity', ascending = False).
+         reset_index(drop=True)
+         )
+
+    )
+```
+
+## Simple Semantic Search
+
+```{python}
+creme_brulee_recipe = [
+    """Ingredients:
+- 2 cups heavy cream
+- 1 vanilla bean, split and scraped or 1 tsp vanilla extract
+- 5 egg yolks
+- 1/2 cup granulated sugar, plus more for caramelizing
+
+Instructions: ... truncated
+"""
+]
+
+get_most_similar_doc(text = creme_brulee_recipe, 
+                     vectorized_corpus = embeddings, 
+                     original_data = recipe_data,
+                     top_n=10)
+
+# Returns    
+## 1) Crème Brûlée                     - Cosine Similarity = 0.870680
+## 2) Chocolate Sprinkled Creme Brulee - Cosine Similarity = 0.822773
+```
+
+# Further know your dataset
+
+## Topic modelling with BERTopic
+
+- [BERTopic](https://maartengr.github.io/BERTopic/index.html) - like a lego for topic modelling
+- Embrace modularity
+![](https://maartengr.github.io/BERTopic/algorithm/default.svg){width=80% height=80%}
+- Fast, when you already have the embeddings
 
 ## Topic modelling with BERTopic
 
@@ -323,4 +448,117 @@ topic_model = BERTopic(
 topics, probs = topic_model.fit_transform(docs, embeddings)
 ```
 
+## Topic modelling with BERTopic
 
+![](/images/bertopic_intertopic_distance.mov)
+
+# Annotate your dataset
+
+## Some work - already done
+
+- Use Bulk
+- Use BERTopic
+- Third option - annotation tools
+
+## Annotation
+
+Any process of adding metadata tags to your text data can be called `annotation`.
+
+Different examples of annotation:
+
+- Text classification
+- Named entities
+- Entity linking
+
+## Annotation Tools
+
+1. Paid tools:
+    - [Prodigy](https://prodi.gy/) (by Explosion (the SpaCy maintainers)) - supports `active learning`
+    - [TagTog](https://www.tagtog.com/-plans)
+    - [LightTag](https://www.lighttag.io/pricing)
+
+2. Open Source tools:
+    - [Argilla](https://docs.argilla.io/en/latest/index.html) - New and quite powerful.
+    - [Doccano](https://doccano.github.io/doccano/)
+    - [BRAT](https://brat.nlplab.org/index.html)
+    - [Pigeon](https://github.com/agermanidis/pigeon) - Simplest of all
+
+## Pigeon - annotate in Jupyter
+
+```{.python}
+annotations = annotate(
+  recipe_data.full_text.sample(100),
+  # 1 - Very Easy, 2 - Kinda Easy, 3 - Moderate to Hard, 4 - Hard
+  options=['1', '2', '3', '4'],
+  # The below is needed just because the recipes are long and tough to see.
+  display_fn=lambda x: pprint(x)
+)
+```
+
+# Few-shot learning with SetFit
+
+## Zero-shot vs. Few-shot learning
+
+![](/images/zero-shot.png){.absolute top=70 left=0 width="45%" height="30%"}
+
+![](/images/few-shot.png){.absolute bottom=0 right=0 width="45%" height="45%"}
+
+::: footer
+Source: GPT-3 paper https://arxiv.org/pdf/2005.14165.pdf
+:::
+
+## Few-shot learning with SetFit
+
+```{python}
+# define the model
+model_id = "sentence-transformers/all-MiniLM-L12-v2"
+model = SetFitModel.from_pretrained(model_id)
+model.model_body[0].max_seq_length = 512
+
+# get the dataset - ca. 15 examples per 4 categories 
+# 1 - easy to 4 - hard
+annotated_df = pd.read_parquet("https://raw.githubusercontent.com/krumeto/oss_nlp_tools_demos/main/data/recipe_classes.parquet")
+train_dataset = Dataset.from_pandas(annotated_df)
+
+# Train the model
+trainer = SetFitTrainer(
+    model=model,
+    train_dataset=train_dataset,
+    loss_class=CosineSimilarityLoss,
+    num_iterations=20,
+    batch_size = 5, # Reduce the batch size due to memory issues
+    column_mapping={"recipe": "text", "label": "label"},
+)
+trainer.train()
+
+complicated_recipe = """Some complicated recipe"""
+
+trainer.model.predict([complicated_recipe])
+```
+
+# Deploy
+
+## Streamlit - why do I love it?
+
+1. Do your usual flow
+2. Sprinkle some [streamlit](https://docs.streamlit.io/) calls
+
+  - Best docs & blog
+3. Get your app. 
+4. Stakeholders and teammates love it!
+
+## Steamlit notes
+
+Utilize caching - `@st.cache_resource` and `@st.cache_data` and wrap in functions
+
+```{.python}
+@st.cache_resource
+def load_model():
+    model = SentenceTransformer("all-MiniLM-L12-v2")
+    model.max_seq_length = 512
+    return(model)
+```
+
+## Summary
+
+# Q&A

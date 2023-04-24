@@ -33,7 +33,7 @@ execute:
 
 
 ::: {style="margin-top: 3em"}
-### Value in NLP can be created with Open Source only.
+### Value in NLP can be created with Open Source Tools.
 ### Small scale is fine.
 ### Search is more important than chat. Still.
 :::
@@ -43,8 +43,16 @@ execute:
 ::: incremental
 - **Not the spirit of ML.**
 - **Not the spirit of SW.**
+- Danger of knowledge 
 :::
 
+## Also
+
+![](images/open-vs-closed-source.png){fig-align="center" width=110% height=110%}
+
+::: footer
+Source: https://twitter.com/julien_c/status/1648738233696632832/photo/1
+:::
 
 ## (Another) Revolution in NLP
 
@@ -65,6 +73,13 @@ execute:
   - But OpenAI's GPT-3.5/4 is as closed source as it gets
     - WTF is that - https://openai.com/policies
 
+## Open Source LLM Landscape
+
+![](images/os-recent-landscape.jpeg)
+
+::: footer
+Source: https://twitter.com/theaievangelist/status/1645809824314298368/photo/1
+:::
 
 ## Open Source vs. Propriatary 
 
@@ -480,7 +495,6 @@ Different examples of annotation:
 2. Open Source tools:
     - [Argilla](https://docs.argilla.io/en/latest/index.html) - New and quite powerful.
     - [Doccano](https://doccano.github.io/doccano/)
-    - [BRAT](https://brat.nlplab.org/index.html)
     - [Pigeon](https://github.com/agermanidis/pigeon) - Simplest of all
 
 ## Pigeon - annotate in Jupyter
@@ -542,8 +556,9 @@ trainer.model.predict([complicated_recipe])
 
 1. Do your usual flow
 2. Sprinkle some [streamlit](https://docs.streamlit.io/) calls
+    
+    - Love the docs & blog
 
-  - Best docs & blog
 3. Get your app. 
 4. Stakeholders and teammates love it!
 
@@ -558,6 +573,33 @@ def load_model():
     model.max_seq_length = 512
     return(model)
 ```
+
+# Scale
+
+## Indexes
+
+Indexes have two main components:
+
+- Storing docs + docs embeddings + metadata
+- Scaled Search implementations:
+  - KNN (also on GPU )
+  - ANN (different algos like HNSW (Hierarchical Navigable Small World))
+
+See e.g. this for index choices - https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index
+
+## Vector Stores
+
+Indexing implementations:
+- ElasticSearch
+- FAISS (Facebook, but open source)
+- OpenSearch
+- Chroma
+
+Some paid ones with free tiers:
+- Pinecone
+- Qdrant
+
+# A note on `LangChain`
 
 ## Summary
 

@@ -98,6 +98,10 @@ Source: https://twitter.com/theaievangelist/status/1645809824314298368/photo/1
 
 My data, my kingdom.
 
+## Motivation
+
+![](images/bulk_demo.mov)
+
 ## Step 1 - Data
 
 - [Recipe Box](https://eightportions.com/datasets/Recipes/) dataset
@@ -366,7 +370,7 @@ embeddings = vectoriser.encode(docs, show_progress_bar=True)
 
 ## Embeddings visualizations with Bulk
 
-- [Bulk](https://github.com/koaning/bulk) - visualisation and initial data labelling in one.
+- [Bulk](https://github.com/koaning/bulk) - visualisation + initial data labelling in one.
 - Works with images too!
 
 ::: {style="text-align: center; margin-top: 4em"}

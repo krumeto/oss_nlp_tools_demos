@@ -97,6 +97,8 @@
   <link href="slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="slides_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="slides_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
@@ -397,27 +399,733 @@
 </section>
 <section id="about-me" class="slide level2">
 <h2>About me</h2>
+<div style="margin-top: 3em">
 <ul>
 <li class="fragment">Joined Financial Times as Data Scientist in 2021</li>
 <li class="fragment">Past jobs as DS at Amplify Analytics, before that Account &amp; Ops Management at HPI</li>
 <li class="fragment">ML knowledge largely self-taught via free online content + the AI specialisation at the SoftUni.</li>
 <li class="fragment">Main hobbies: my kids, some music, local politics</li>
 </ul>
+</div>
 </section>
 <section id="topic-today" class="slide level2">
 <h2>Topic today</h2>
+<div style="margin-top: 3em">
 <ul>
 <li class="fragment">Work with a NLP dataset.</li>
 <li class="fragment">Discuss central practical NLP concepts.</li>
 <li class="fragment">Build a small app.</li>
+<li class="fragment"><a href="https://github.com/krumeto/oss_nlp_tools_demos" data-preview-link="true">Repo</a></li>
 </ul>
+</div>
+</section>
+<section id="before-we-start---definition" class="slide level2">
+<h2>Before we start - Definition</h2>
+<div style="margin-top: 3em">
+<p><em>Open-source software (OSS) is computer software that is released under a license in which the copyright holder grants users the rights to use, study, change, and distribute the software and its source code to anyone and for any purpose.</em></p>
+</div>
+<div class="footer">
+<p>Source: Wikipedia</p>
+</div>
+</section>
+<section id="before-we-start---motivation" class="slide level2">
+<h2>Before we start - Motivation</h2>
+<p><video data-src="images/bulk_demo.mov" controls=""><a href="images/bulk_demo.mov">Video</a></video></p>
+</section>
+<section id="step-1---data" class="slide level2">
+<h2>Step 1 - Data</h2>
+<ul>
+<li class="fragment"><p><a href="https://eightportions.com/datasets/Recipes/" data-preview-link="true">Recipe Box</a> dataset</p></li>
+<li class="fragment"><p>Data Example:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="co">"p3pKOD6jIHEcjf20CCXohP8uqkG5dGi"</span>: {</span>
+<span id="cb1-3"><a href="#cb1-3"></a>    <span class="st">"instructions"</span>: <span class="st">"Toss ingredients lightly and spoon into a buttered baking dish. ..."</span>,</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    <span class="st">"ingredients"</span>: [</span>
+<span id="cb1-5"><a href="#cb1-5"></a>      <span class="st">"1/2 cup celery, finely chopped"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6"></a>      <span class="st">"1 small green pepper finely chopped"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7"></a>      <span class="st">"..."</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>    ],</span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="st">"title"</span>: <span class="st">"Grammie Hamblet's Deviled Crab"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>    <span class="st">"picture_link"</span>: null</span>
+<span id="cb1-11"><a href="#cb1-11"></a>  }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul>
+</section>
+<section id="data-preprocessing" class="slide level2">
+<h2>Data Preprocessing</h2>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># imports and json files parsing skipped</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># Combine the data from the three JSON files</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># Convert the data to a dataframe</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># Add a new column with the concatenated text</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
+<span id="cb2-12"><a href="#cb2-12"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
+<span id="cb2-13"><a href="#cb2-13"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
+<span id="cb2-14"><a href="#cb2-14"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
+<span id="cb2-15"><a href="#cb2-15"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
+<span id="cb2-16"><a href="#cb2-16"></a>                        df[<span class="st">'instructions'</span>])</span>
+<span id="cb2-17"><a href="#cb2-17"></a></span>
+<span id="cb2-18"><a href="#cb2-18"></a>df <span class="op">=</span> (df.</span>
+<span id="cb2-19"><a href="#cb2-19"></a>      <span class="co"># remove adds</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a>      pipe(remove_advertisement).</span>
+<span id="cb2-21"><a href="#cb2-21"></a>      <span class="co"># drop the picture_link column</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
+<span id="cb2-23"><a href="#cb2-23"></a>      <span class="co"># give a num_words estimation</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
+<span id="cb2-25"><a href="#cb2-25"></a>      <span class="co"># drop short articles</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
+<span id="cb2-27"><a href="#cb2-27"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-preprocessing-1" class="slide level2">
+<h2>Data Preprocessing</h2>
+<div class="sourceCode" id="cb3" data-code-line-numbers="10-18|19-22|23-24|25-26|27-28"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># imports and json files parsing skipped</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># Combine the data from the three JSON files</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
+<span id="cb3-8"><a href="#cb3-8"></a></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># Convert the data to a dataframe</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
+<span id="cb3-11"><a href="#cb3-11"></a></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co"># Add a new column with the concatenated text</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
+<span id="cb3-14"><a href="#cb3-14"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
+<span id="cb3-15"><a href="#cb3-15"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
+<span id="cb3-16"><a href="#cb3-16"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
+<span id="cb3-17"><a href="#cb3-17"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
+<span id="cb3-18"><a href="#cb3-18"></a>                        df[<span class="st">'instructions'</span>])</span>
+<span id="cb3-19"><a href="#cb3-19"></a></span>
+<span id="cb3-20"><a href="#cb3-20"></a>df <span class="op">=</span> (df.</span>
+<span id="cb3-21"><a href="#cb3-21"></a>      <span class="co"># remove adds</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a>      pipe(remove_advertisement).</span>
+<span id="cb3-23"><a href="#cb3-23"></a>      <span class="co"># drop the picture_link column</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
+<span id="cb3-25"><a href="#cb3-25"></a>      <span class="co"># give a num_words estimation</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
+<span id="cb3-27"><a href="#cb3-27"></a>      <span class="co"># drop short articles</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
+<span id="cb3-29"><a href="#cb3-29"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="step-2---document-representations" class="slide level2">
+<h2>Step 2 - Document Representations</h2>
+<div style="margin-top: 3em">
+<ul>
+<li class="fragment">What is a <code>document</code>?</li>
+<li class="fragment">What is a <code>representation</code>?</li>
+</ul>
+</div>
+</section>
+<section id="document-representation-goal" class="slide level2">
+<h2>Document Representation Goal</h2>
+<div style="margin-top: 3em;">
+<p>Find <code>numerical representation</code> of the documents such that semantically <code>similar documents are close.</code></p>
+<p>And semantically <code>dissimilar documents - far.</code></p>
+</div>
+</section>
+<section id="what-does-semantically-similar-mean" class="slide level2">
+<h2>What does semantically similar mean?</h2>
+
+<img data-src="/images/sem_similarity.png" class="r-stretch"><div class="footer">
+<p>Based on: Nils Reimers, Introduction to Dense Text Representations</p>
+</div>
+</section>
+<section id="document-representations" class="slide level2">
+<h2>Document representations</h2>
+<div style="margin-top: 3em">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="/images/doc_representations.png"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="document-representations-1" class="slide level2">
+<h2>Document representations</h2>
+<div style="margin-top: 3em">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="/images/doc_reps_movies.png"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="old-school---term-frequency" class="slide level2">
+<h2>Old School - Term frequency</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="/images/term_freq.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="old-school---inverse-document-frequency" class="slide level2">
+<h2>Old School - Inverse Document Frequency</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="/images/idf.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="old-school---tf-idf" class="slide level2">
+<h2>Old School - TF-IDF</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.9%;justify-content: center;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 44.1%;justify-content: center;">
+<div class="quarto-figure quarto-figure-right">
+<figure>
+<p><img data-src="/images/term_freq.png"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 18.6%;justify-content: center;">
+<p>&nbsp;</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 15.7%;justify-content: center;">
+<div class="quarto-figure quarto-figure-left">
+<figure>
+<p><img data-src="/images/idf.png"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 18.6%;justify-content: center;">
+<p>&nbsp;</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img data-src="/images/tf-idf.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="old-school---tf-idf-1" class="slide level2">
+<h2>Old School - TF-IDF</h2>
+<p>Using <code>sklearn</code>’s <code>TfidfVectorizer</code>:</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>vectoriser <span class="op">=</span> TfidfVectorizer(</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    stop_words<span class="op">=</span><span class="st">'english'</span>, <span class="co"># default is without it, but this decreases the dictionary size significantly</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>    min_df <span class="op">=</span> <span class="dv">2</span>, <span class="co"># Ignore terms that have a document frequency strictly lower than the given threshold. When float, proportion of docs.</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>    max_df <span class="op">=</span> <span class="fl">0.95</span>, <span class="co"># ignore terms that have a document frequency strictly higher than the given threshold (corpus-specific stop words).</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>    ngram_range<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="co"># uni and bi-grams</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>    max_features<span class="op">=</span><span class="dv">30_000</span>, <span class="co"># unigrams are ca. 22K, get top 8000 bigrams</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>    dtype<span class="op">=</span>np.float32 <span class="co"># Reduces the size of the resulting array without much quality sacrifice, default is float64</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a>embeddings <span class="op">=</span> vectoriser.fit_transform(recipe_data.full_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="common-sparse-representation-issues" class="slide level2">
+<h2>Common Sparse Representation Issues</h2>
+<ul>
+<li class="fragment"><p>Frequently mentioned:</p>
+<ul>
+<li class="fragment">Lexical gap: UK, United Kingdom, England</li>
+<li class="fragment">Word order not preserved</li>
+</ul></li>
+<li class="fragment"><p>Actual issues:</p>
+<ul>
+<li class="fragment">Requires a “vocabulary” of size (n_training docs, nr_tokens_retained) in memory e.g.&nbsp;(50 000, 100 000)</li>
+<li class="fragment">Huge vectors - tough for clustering tasks, store and scale.</li>
+</ul></li>
+</ul>
+</section>
+<section id="dense-document-representations" class="slide level2">
+<h2>Dense Document Representations</h2>
+<div style="margin-top: 3em">
+<ul>
+<li class="fragment"><em><code>f</code>(Text)</em> -&gt; <em>Representation^<code>n</code></em></li>
+<li class="fragment"><code>n</code> dimensional representation</li>
+<li class="fragment">Find function <code>f</code> such that semantically similar text is close</li>
+</ul>
+</div>
+<div class="footer">
+<p>Source: Nils Reimers, Introduction to Dense Text Representations</p>
+</div>
+</section>
+<section id="sentence-transformers" class="slide level2">
+<h2>Sentence Transformers</h2>
+<div style="margin-top: 3em">
+<p>A family of language models finetuned specifically to produce document representations.</p>
+<ul>
+<li class="fragment">Great for semantic search, clustering, classification…</li>
+<li class="fragment">Work with multilanguage models as well. Images too!</li>
+<li class="fragment">Build to work well with Huggingface and friends.</li>
+</ul>
+<div style="text-align: center; margin-top: 1em">
+<p><a href="https://www.sbert.net/docs/pretrained_models.html" data-preview-link="true" style="text-align: center">Pretrained Sentence Transformers</a></p>
+</div>
+</div>
+</section>
+<section id="sentence-transformers-1" class="slide level2">
+<h2>Sentence Transformers</h2>
+
+<img data-src="/images/sbert.png" class="r-stretch"><div class="footer">
+<p>Source: Nils Reimers, Introduction to Dense Text Representations</p>
+</div>
+</section>
+<section id="sentencetransformers---triplet-loss-example" class="slide level2">
+<h2>SentenceTransformers - Triplet loss example</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>{<span class="st">'set'</span>:</span>
+<span id="cb5-2"><a href="#cb5-2"></a> {<span class="st">'query'</span>: <span class="st">'What can I do to get better grades?'</span>,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="st">'pos'</span>: </span>
+<span id="cb5-4"><a href="#cb5-4"></a>[<span class="st">'How do I improve my grades?'</span>],</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="st">'neg'</span>: </span>
+<span id="cb5-6"><a href="#cb5-6"></a>[<span class="st">'Why do I get bad grades even though I study a lot?'</span>,</span>
+<span id="cb5-7"><a href="#cb5-7"></a>   <span class="st">'How can I get better grades in maths?'</span>,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>   <span class="st">'How serious is forging high school grades?'</span>]</span>
+<span id="cb5-9"><a href="#cb5-9"></a>}</span>
+<span id="cb5-10"><a href="#cb5-10"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<img data-src="/images/triplet_loss.png" class="r-stretch"><div class="footer">
+<p>Nils Reimers, Introduction to Dense Text Representations</p>
+</div>
+</section>
+<section id="loss-functions" class="slide level2">
+<h2>Loss functions</h2>
+
+<img data-src="https://huggingface.co/blog/assets/95_training_st_models/datasets_table.png" class="r-stretch"><div class="footer">
+<p>Source: <a href="https://huggingface.co/blog/how-to-train-sentence-transformers">Huggingface blog</a></p>
+</div>
+</section>
+<section id="sentence-transformers---choices" class="slide level2">
+<h2>Sentence Transformers - Choices</h2>
+<div style="margin-top: 3em">
+<ul>
+<li class="fragment">Many Sentence Transformers options</li>
+<li class="fragment">Great docs</li>
+<li class="fragment"><a href="https://www.sbert.net/docs/pretrained_models.html" data-preview-link="true">Pretrained Sentence Transformers</a></li>
+</ul>
+</div>
+<div class="footer">
+<p>*Up to 512 tokens (ca. 400 words)</p>
+</div>
+</section>
+<section id="choices---mteb" class="slide level2">
+<h2>Choices - MTEB</h2>
+<p>Massive Text Embedding Benchmark (<a href="https://huggingface.co/spaces/mteb/leaderboard" data-preview-link="true" style="text-align: center">MTEB</a>)</p>
+
+<img data-src="/images/mteb_2.png" class="r-stretch"></section>
+<section id="sentence-transformers-api" class="slide level2">
+<h2>Sentence Transformers API</h2>
+<div style="text-align: center; margin-top: 4em">
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co"># download model</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>vectoriser <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># ensure that the model vectorises up to 512 tokens</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>vectoriser.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a>docs <span class="op">=</span> [rec <span class="cf">for</span> rec <span class="kw">in</span> recipe_data.full_text]</span>
+<span id="cb6-9"><a href="#cb6-9"></a>embeddings <span class="op">=</span> vectoriser.encode(docs, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section>
+<section id="how-do-you-know-if-youve-done-a-good-job" class="title-slide slide level1 center" data-chalkboard-buttons="true">
+<h1>How do you know if you’ve done a good job?</h1>
+
+</section>
+<section id="option-1---visualize" class="slide level2">
+<h2>Option 1 - Visualize</h2>
+<div style="margin-top: 3em">
+<ol type="1">
+<li class="fragment">Reduce dimensions to 2 (UMAP seems to be the best option, TruncatedSVD for sparse data)</li>
+<li class="fragment">Create an interactive plot:</li>
+</ol>
+<ul>
+<li class="fragment">good options - altair, bokeh, plotly</li>
+</ul>
+</div>
+</section>
+<section id="embeddings-visualizations-with-bulk" class="slide level2">
+<h2>Embeddings visualizations with Bulk</h2>
+<div style="margin-top: 1em">
+<ul>
+<li class="fragment"><a href="https://github.com/koaning/bulk" data-preview-link="true">Bulk</a> - visualisation + initial data labelling in one.</li>
+<li class="fragment">Works with images too!</li>
+<li class="fragment">Steps:
+<ol type="1">
+<li class="fragment">Reduce dimensions to 2 with UMAP.</li>
+<li class="fragment">Add a text column.</li>
+<li class="fragment">Save as a .csv</li>
+<li class="fragment"><code>python -m bulk text data/bulk_st.csv</code></li>
+</ol></li>
+</ul>
+</div>
+</section>
+<section id="option-2---simple-semantic-search" class="slide level2">
+<h2>Option 2 - Simple Semantic Search</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> get_most_similar_doc(text:<span class="bu">str</span>, </span>
+<span id="cb7-2"><a href="#cb7-2"></a>                         vectorized_corpus:np.array, </span>
+<span id="cb7-3"><a href="#cb7-3"></a>                         original_data:pd.DataFrame, </span>
+<span id="cb7-4"><a href="#cb7-4"></a>                         vectoriser:SentenceTransformer <span class="op">=</span> vectoriser, </span>
+<span id="cb7-5"><a href="#cb7-5"></a>                         top_n:<span class="bu">int</span> <span class="op">=</span> <span class="dv">5</span>):</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co"># encodes the input text</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    new_doc_vector <span class="op">=</span> vectoriser.encode(text)</span>
+<span id="cb7-8"><a href="#cb7-8"></a>    <span class="co"># calculates the cosine similarity between the new text embedding </span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>    <span class="co"># and all other vectors</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>    <span class="co"># cos sim from scikit-learn</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>    sim <span class="op">=</span> cosine_similarity(X <span class="op">=</span> vectorized_corpus, Y <span class="op">=</span> new_doc_vector).flatten()</span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="co"># gets the indices of the top_n highest similarities</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>    argmax <span class="op">=</span> np.argpartition(sim, <span class="op">-</span>top_n)[<span class="op">-</span>top_n:]</span>
+<span id="cb7-14"><a href="#cb7-14"></a>    <span class="co"># returns the original data filtered for the top results</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>    <span class="cf">return</span>(</span>
+<span id="cb7-16"><a href="#cb7-16"></a>        (original_data.</span>
+<span id="cb7-17"><a href="#cb7-17"></a>         iloc[argmax].</span>
+<span id="cb7-18"><a href="#cb7-18"></a>         <span class="co"># adds the cosine similarity as a column</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>         assign(similarity <span class="op">=</span> sim[argmax]).</span>
+<span id="cb7-20"><a href="#cb7-20"></a>         loc[:, [<span class="st">'title'</span>, <span class="st">'ingredients'</span>, <span class="st">'similarity'</span>]].</span>
+<span id="cb7-21"><a href="#cb7-21"></a>         sort_values(<span class="st">'similarity'</span>, ascending <span class="op">=</span> <span class="va">False</span>).</span>
+<span id="cb7-22"><a href="#cb7-22"></a>         reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-23"><a href="#cb7-23"></a>         )</span>
+<span id="cb7-24"><a href="#cb7-24"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="simple-semantic-search" class="slide level2">
+<h2>Simple Semantic Search</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>creme_brulee_recipe <span class="op">=</span> [</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    <span class="st">"""Ingredients:</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="st">- 2 cups heavy cream</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="st">- 1 vanilla bean, split and scraped or 1 tsp vanilla extract</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="st">- 5 egg yolks</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="st">- 1/2 cup granulated sugar, plus more for caramelizing</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="st">Instructions: ... truncated</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="st">"""</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>]</span>
+<span id="cb8-11"><a href="#cb8-11"></a></span>
+<span id="cb8-12"><a href="#cb8-12"></a>get_most_similar_doc(text <span class="op">=</span> creme_brulee_recipe, </span>
+<span id="cb8-13"><a href="#cb8-13"></a>                     vectorized_corpus <span class="op">=</span> embeddings, </span>
+<span id="cb8-14"><a href="#cb8-14"></a>                     original_data <span class="op">=</span> recipe_data,</span>
+<span id="cb8-15"><a href="#cb8-15"></a>                     top_n<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-16"><a href="#cb8-16"></a></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="co"># Returns    </span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">## 1) Crème Brûlée                     - Cosine Similarity = 0.870680</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="co">## 2) Chocolate Sprinkled Creme Brulee - Cosine Similarity = 0.822773</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
+<section>
+<section id="further-know-your-dataset" class="title-slide slide level1 center">
+<h1>Further know your dataset</h1>
+
+</section>
+<section id="topic-modelling-with-bertopic" class="slide level2">
+<h2>Topic modelling with BERTopic</h2>
+<ul>
+<li class="fragment"><a href="https://maartengr.github.io/BERTopic/index.html" data-preview-link="true">BERTopic</a> - like a lego for topic modelling</li>
+<li class="fragment">Embrace modularity <img data-src="https://maartengr.github.io/BERTopic/algorithm/default.svg" style="width:80.0%;height:80.0%"></li>
+<li class="fragment">Fast, when you already have the embeddings</li>
+</ul>
+</section>
+<section id="bertopic---simple" class="slide level2">
+<h2>BERTopic - simple</h2>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Reduce stopwords in labels</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>vectoriser_model <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span><span class="st">"english"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a>topic_model <span class="op">=</span> BERTopic(</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    vectorizer_model<span class="op">=</span>vectoriser_model,</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    )</span>
+<span id="cb9-7"><a href="#cb9-7"></a></span>
+<span id="cb9-8"><a href="#cb9-8"></a>topics, probs <span class="op">=</span> topic_model.fit_transform(docs, embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="bertopic---advanced" class="slide level2">
+<h2>BERTopic - advanced</h2>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Reduce stopwords in labels</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>vectoriser_model <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span><span class="st">"english"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co"># Customize clustering</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>hdbscan_model <span class="op">=</span> HDBSCAN(min_cluster_size<span class="op">=</span><span class="dv">10</span>, </span>
+<span id="cb10-5"><a href="#cb10-5"></a>                        min_samples <span class="op">=</span> <span class="dv">1</span>, <span class="co"># This to reduce outliers as much as possible</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a>                        cluster_selection_epsilon <span class="op">=</span> <span class="fl">0.1</span>, <span class="co"># Reduce number of clusters</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>                        metric<span class="op">=</span><span class="st">'euclidean'</span>, </span>
+<span id="cb10-8"><a href="#cb10-8"></a>                        prediction_data<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-9"><a href="#cb10-9"></a></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co"># Improve label representation </span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>sentence_model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12"></a>sentence_model.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a>representation_model <span class="op">=</span> MaximalMarginalRelevance(diversity<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb10-14"><a href="#cb10-14"></a></span>
+<span id="cb10-15"><a href="#cb10-15"></a>topic_model <span class="op">=</span> BERTopic(</span>
+<span id="cb10-16"><a href="#cb10-16"></a>    vectorizer_model<span class="op">=</span>vectoriser_model,</span>
+<span id="cb10-17"><a href="#cb10-17"></a>    hdbscan_model <span class="op">=</span> hdbscan_model,</span>
+<span id="cb10-18"><a href="#cb10-18"></a>    min_topic_size<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb10-19"><a href="#cb10-19"></a>    n_gram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb10-20"><a href="#cb10-20"></a>    embedding_model<span class="op">=</span>sentence_model, </span>
+<span id="cb10-21"><a href="#cb10-21"></a>    representation_model<span class="op">=</span>representation_model</span>
+<span id="cb10-22"><a href="#cb10-22"></a>    )</span>
+<span id="cb10-23"><a href="#cb10-23"></a></span>
+<span id="cb10-24"><a href="#cb10-24"></a>topics, probs <span class="op">=</span> topic_model.fit_transform(docs, embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="topic-modelling-with-bertopic-1" class="slide level2">
+<h2>Topic modelling with BERTopic</h2>
+<p><video data-src="/images/bertopic_intertopic_distance.mov" controls=""><a href="/images/bertopic_intertopic_distance.mov">Video</a></video></p>
+</section></section>
+<section>
+<section id="annotate-your-dataset" class="title-slide slide level1 center">
+<h1>Annotate your dataset</h1>
+
+</section>
+<section id="annotation" class="slide level2">
+<h2>Annotation</h2>
+<div style="margin-top: 1em">
+<p>Any process of adding metadata tags to your text data can be called <code>annotation</code>.</p>
+<p>Different examples of annotation:</p>
+<ul>
+<li class="fragment">Text classification</li>
+<li class="fragment">Named entities</li>
+<li class="fragment">Entity linking</li>
+</ul>
+</div>
+</section>
+<section id="some-work---already-done" class="slide level2">
+<h2>Some work - already done</h2>
+<div style="margin-top: 3em">
+<ul>
+<li class="fragment">Use Bulk</li>
+<li class="fragment">Use BERTopic</li>
+<li class="fragment">Third option - annotation tools</li>
+</ul>
+</div>
+</section>
+<section id="annotation-tools" class="slide level2">
+<h2>Annotation Tools</h2>
+<ol type="1">
+<li class="fragment">Paid tools:
+<ul>
+<li class="fragment"><a href="https://prodi.gy/" data-preview-link="true">Prodigy</a> (by Explosion (the SpaCy maintainers)) - supports <code>active learning</code></li>
+<li class="fragment"><a href="https://www.tagtog.com/-plans" data-preview-link="true">TagTog</a></li>
+<li class="fragment"><a href="https://www.lighttag.io/pricing" data-preview-link="true">LightTag</a></li>
+</ul></li>
+<li class="fragment">Open Source tools:
+<ul>
+<li class="fragment"><a href="https://docs.argilla.io/en/latest/index.html" data-preview-link="true">Argilla</a> - New and quite powerful.</li>
+<li class="fragment"><a href="https://doccano.github.io/doccano/" data-preview-link="true">Doccano</a></li>
+<li class="fragment"><a href="https://github.com/agermanidis/pigeon" data-preview-link="true">Pigeon</a>- Simplest of all</li>
+</ul></li>
+</ol>
+</section>
+<section id="pigeon---annotate-in-jupyter" class="slide level2">
+<h2>Pigeon - annotate in Jupyter</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>annotations <span class="op">=</span> annotate(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>  recipe_data.full_text.sample(<span class="dv">100</span>),</span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="co"># 1 - Very Easy, 2 - Kinda Easy, 3 - Moderate to Hard, 4 - Hard</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a>  options<span class="op">=</span>[<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'3'</span>, <span class="st">'4'</span>],</span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="co"># The below is needed just because the recipes are long and tough to see.</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>  display_fn<span class="op">=</span><span class="kw">lambda</span> x: pprint(x)</span>
+<span id="cb11-7"><a href="#cb11-7"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
+<section>
+<section id="few-shot-learning-with-setfit" class="title-slide slide level1 center">
+<h1>Few-shot learning with SetFit</h1>
+
+</section>
+<section id="zero-shot-vs.-few-shot-learning" class="slide level2">
+<h2>Zero-shot vs.&nbsp;Few-shot learning</h2>
+<p><img data-src="/images/zero-shot.png" class="absolute" style="top: 70px; left: 0px; width: 45%; height: 30%; "></p>
+<p><img data-src="/images/few-shot.png" class="absolute" style="bottom: 0px; right: 0px; width: 45%; height: 45%; "></p>
+<div class="footer">
+<p>Source: GPT-3 paper https://arxiv.org/pdf/2005.14165.pdf</p>
+</div>
+</section>
+<section id="setfit---how-does-it-work" class="slide level2">
+<h2>SetFit - How Does It Work?</h2>
+<div style="margin-top: 1em">
+<ol type="1">
+<li class="fragment">Get some labelled data (10-15 examples per class are fine).</li>
+<li class="fragment">Fine-tune a SentenceTransformer with the labelled data.</li>
+</ol>
+<ul>
+<li class="fragment">Intuition - Think moving embeddings closer together, based on the labelled data.</li>
+</ul>
+<ol start="3" type="1">
+<li class="fragment">Add a classification model (head) - can be any <code>scikit-learn</code> classifier, <code>pytorch</code> layers, etc…</li>
+<li class="fragment">Train the classification model with the fine-tuned SentenceTransformer.</li>
+</ol>
+</div>
+<div class="footer">
+<p>See Huggingface’s <a href="https://huggingface.co/blog/setfit">blogpost</a></p>
+</div>
+</section>
+<section id="few-shot-learning-with-setfit-1" class="slide level2">
+<h2>Few-shot learning with SetFit</h2>
+<div style="margin-top: 1em">
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># define the model</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>model_id <span class="op">=</span> <span class="st">"sentence-transformers/all-MiniLM-L12-v2"</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>model <span class="op">=</span> SetFitModel.from_pretrained(model_id)</span>
+<span id="cb12-4"><a href="#cb12-4"></a>model.model_body[<span class="dv">0</span>].max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a></span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="co"># get the dataset - ca. 15 examples per 4 categories </span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="co"># 1 - easy to 4 - hard</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a>annotated_df <span class="op">=</span> pd.read_parquet(<span class="st">"https://raw.githubusercontent.com/krumeto/oss_nlp_tools_demos/main/data/recipe_classes.parquet"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9"></a>train_dataset <span class="op">=</span> Dataset.from_pandas(annotated_df)</span>
+<span id="cb12-10"><a href="#cb12-10"></a></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="co"># Train the model</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a>trainer <span class="op">=</span> SetFitTrainer(</span>
+<span id="cb12-13"><a href="#cb12-13"></a>    model<span class="op">=</span>model,</span>
+<span id="cb12-14"><a href="#cb12-14"></a>    train_dataset<span class="op">=</span>train_dataset,</span>
+<span id="cb12-15"><a href="#cb12-15"></a>    loss_class<span class="op">=</span>CosineSimilarityLoss,</span>
+<span id="cb12-16"><a href="#cb12-16"></a>    num_iterations<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb12-17"><a href="#cb12-17"></a>    batch_size <span class="op">=</span> <span class="dv">5</span>, <span class="co"># Reduce the batch size due to memory issues</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a>    column_mapping<span class="op">=</span>{<span class="st">"recipe"</span>: <span class="st">"text"</span>, <span class="st">"label"</span>: <span class="st">"label"</span>},</span>
+<span id="cb12-19"><a href="#cb12-19"></a>)</span>
+<span id="cb12-20"><a href="#cb12-20"></a>trainer.train()</span>
+<span id="cb12-21"><a href="#cb12-21"></a></span>
+<span id="cb12-22"><a href="#cb12-22"></a>complicated_recipe <span class="op">=</span> <span class="st">"""Some complicated recipe"""</span></span>
+<span id="cb12-23"><a href="#cb12-23"></a></span>
+<span id="cb12-24"><a href="#cb12-24"></a>trainer.model.predict([complicated_recipe])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section>
+<section>
+<section id="deploy" class="title-slide slide level1 center">
+<h1>Deploy</h1>
+
+</section>
+<section id="streamlit---why-do-i-love-it" class="slide level2">
+<h2>Streamlit - why do I love it?</h2>
+<div style="margin-top: 2em">
+<ol type="1">
+<li class="fragment"><p>Do your usual flow</p></li>
+<li class="fragment"><p>Sprinkle some <a href="https://docs.streamlit.io/" data-preview-link="true">streamlit</a> calls</p>
+<ul>
+<li class="fragment">Love the docs &amp; blog</li>
+</ul></li>
+<li class="fragment"><p>Get your app.</p></li>
+<li class="fragment"><p>Stakeholders and teammates love it!</p></li>
+</ol>
+</div>
+</section>
+<section id="steamlit-notes" class="slide level2">
+<h2>Steamlit notes</h2>
+<div style="margin-top: 2em">
+<p>Utilize caching - <code>@st.cache_resource</code> and <code>@st.cache_data</code> and wrap in functions</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="at">@st.cache_resource</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="kw">def</span> load_model():</span>
+<span id="cb13-3"><a href="#cb13-3"></a>    model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    model.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a>    <span class="cf">return</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section>
+<section>
+<section id="scale" class="title-slide slide level1 center">
+<h1>Scale</h1>
+
+</section>
+<section id="indexes" class="slide level2">
+<h2>Indexes</h2>
+<p>Indexes have two main components:</p>
+<ul>
+<li class="fragment">Storing docs + docs embeddings + metadata</li>
+<li class="fragment">Scaled Search implementations:
+<ul>
+<li class="fragment">KNN (also on GPU )</li>
+<li class="fragment">ANN (different algos like HNSW (Hierarchical Navigable Small World))</li>
+</ul></li>
+<li class="fragment">See e.g.&nbsp;<a href="https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index" data-preview-link="true">this for index choices</a></li>
+</ul>
+</section>
+<section id="vector-stores" class="slide level2">
+<h2>Vector Stores</h2>
+<p>Indexing implementations: - ElasticSearch - FAISS (Facebook, but open source) - OpenSearch - Chroma - SimSity (small but cute)</p>
+<p>Some paid ones with free tiers: - Pinecone - Qdrant</p>
+</section>
+<section id="example-1---simsity" class="slide level2">
+<h2>Example 1 - SimSity</h2>
+<div style="margin-top: 1em">
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="im">from</span> simsity <span class="im">import</span> create_index, load_index</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co"># simsity requires the encoder class to have a `transform` method, thus this simple wrapper.</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="kw">class</span> Encoder:</span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model_name, max_seq_length <span class="op">=</span> <span class="dv">512</span>):</span>
+<span id="cb14-6"><a href="#cb14-6"></a>        <span class="va">self</span>.model <span class="op">=</span> SentenceTransformer(model_name)</span>
+<span id="cb14-7"><a href="#cb14-7"></a>        <span class="co"># Ensure we increase the max_seq_length to the maximum 512 to handle the long recipes</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>        <span class="va">self</span>.model.max_seq_length <span class="op">=</span> max_seq_length</span>
+<span id="cb14-9"><a href="#cb14-9"></a>    </span>
+<span id="cb14-10"><a href="#cb14-10"></a>    <span class="kw">def</span> transform(<span class="va">self</span>, data:<span class="bu">list</span>):</span>
+<span id="cb14-11"><a href="#cb14-11"></a>        <span class="cf">return</span> <span class="va">self</span>.model.encode(data)</span>
+<span id="cb14-12"><a href="#cb14-12"></a></span>
+<span id="cb14-13"><a href="#cb14-13"></a>encoder <span class="op">=</span> Encoder(model_name<span class="op">=</span><span class="st">"all-MiniLM-L12-v2"</span>)</span>
+<span id="cb14-14"><a href="#cb14-14"></a></span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="co"># Populate the ANN vector index and use it. </span></span>
+<span id="cb14-16"><a href="#cb14-16"></a>index <span class="op">=</span> create_index([rec <span class="cf">for</span> rec <span class="kw">in</span> recipe_data.full_text], </span>
+<span id="cb14-17"><a href="#cb14-17"></a>                     encoder,</span>
+<span id="cb14-18"><a href="#cb14-18"></a>                     path<span class="op">=</span><span class="st">"../embeddings/"</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a>                     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example-2---chromadb-langchain" class="slide level2">
+<h2>Example 2 - ChromaDB + LangChain</h2>
+<div style="margin-top: 2em">
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="im">from</span> langchain.embeddings <span class="im">import</span> HuggingFaceEmbeddings</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="im">from</span> langchain.vectorstores <span class="im">import</span> Chroma</span>
+<span id="cb15-3"><a href="#cb15-3"></a></span>
+<span id="cb15-4"><a href="#cb15-4"></a>embeddings <span class="op">=</span> HuggingFaceEmbeddings(model_name<span class="op">=</span><span class="st">"sentence-transformers/all-MiniLM-L12-v2"</span>)</span>
+<span id="cb15-5"><a href="#cb15-5"></a>db <span class="op">=</span> Chroma.from_texts(texts<span class="op">=</span>[doc <span class="cf">for</span> doc <span class="kw">in</span> recipe_data.full_text], </span>
+<span id="cb15-6"><a href="#cb15-6"></a>                           embedding<span class="op">=</span>embeddings,</span>
+<span id="cb15-7"><a href="#cb15-7"></a>                           persist_directory<span class="op">=</span><span class="st">"../embeddings/chromadb"</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a>                           )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section>
+<section>
+<section id="a-note-on-langchain" class="title-slide slide level1 center">
+<h1>A note on <code>LangChain</code></h1>
+
+</section>
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<div style="margin-top: 2em">
+<h3 id="value-in-nlp-can-be-created-with-open-source-tools.">Value in NLP can be created with Open Source Tools.</h3>
+<h3 id="small-scale-is-fine.">Small scale is fine.</h3>
+<h3 id="search-is-more-important-than-chat.-still.">Search is more important than chat. Still.</h3>
+</div>
+</section></section>
+<section>
+<section id="qa" class="title-slide slide level1 center">
+<h1>Q&amp;A</h1>
+
 </section>
 <section class="slide level2">
 
 <div style="margin-top: 3em">
-<h3 id="value-in-nlp-can-be-created-with-open-source-tools.">Value in NLP can be created with Open Source Tools.</h3>
-<h3 id="small-scale-is-fine.">Small scale is fine.</h3>
-<h3 id="search-is-more-important-than-chat.-still.">Search is more important than chat. Still.</h3>
+<h3 id="value-in-nlp-can-be-created-with-open-source-tools.-1">Value in NLP can be created with Open Source Tools.</h3>
+<h3 id="small-scale-is-fine.-1">Small scale is fine.</h3>
+<h3 id="search-is-more-important-than-chat.-still.-1">Search is more important than chat. Still.</h3>
 </div>
 </section>
 <section id="why-do-i-strongly-dislike-closed-source" class="slide level2">
@@ -498,495 +1206,14 @@
 <h2>Open?AI</h2>
 <p>My data, my kingdom.</p>
 </section>
-<section id="step-1---data" class="slide level2">
-<h2>Step 1 - Data</h2>
-<ul>
-<li class="fragment"><a href="https://eightportions.com/datasets/Recipes/">Recipe Box</a> dataset</li>
-<li class="fragment">Example:</li>
-</ul>
-</section>
-<section id="data-preprocessing" class="slide level2">
-<h2>Data Preprocessing</h2>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># imports and json files parsing skipped</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Combine the data from the three JSON files</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Convert the data to a dataframe</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
-<span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># Add a new column with the concatenated text</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
-<span id="cb1-12"><a href="#cb1-12"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
-<span id="cb1-13"><a href="#cb1-13"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
-<span id="cb1-14"><a href="#cb1-14"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
-<span id="cb1-15"><a href="#cb1-15"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
-<span id="cb1-16"><a href="#cb1-16"></a>                        df[<span class="st">'instructions'</span>])</span>
-<span id="cb1-17"><a href="#cb1-17"></a></span>
-<span id="cb1-18"><a href="#cb1-18"></a>df <span class="op">=</span> (df.</span>
-<span id="cb1-19"><a href="#cb1-19"></a>      <span class="co"># remove adds</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a>      pipe(remove_advertisement).</span>
-<span id="cb1-21"><a href="#cb1-21"></a>      <span class="co"># drop the picture_link column</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
-<span id="cb1-23"><a href="#cb1-23"></a>      <span class="co"># give a num_words estimation</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
-<span id="cb1-25"><a href="#cb1-25"></a>      <span class="co"># drop short articles</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
-<span id="cb1-27"><a href="#cb1-27"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="data-preprocessing-1" class="slide level2">
-<h2>Data Preprocessing</h2>
-<div class="sourceCode" id="cb2" data-code-line-numbers="10-18|19-22|23-24|25-26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># imports and json files parsing skipped</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># see data.preprocess_data.combine_json_to_dataframe.py</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># Combine the data from the three JSON files</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a>data <span class="op">=</span> {<span class="op">**</span>fn_data, <span class="op">**</span>epi_data, <span class="op">**</span>ar_data}</span>
-<span id="cb2-8"><a href="#cb2-8"></a></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># Convert the data to a dataframe</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a>df <span class="op">=</span> pd.DataFrame.from_dict(data, orient<span class="op">=</span><span class="st">'index'</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="co"># Add a new column with the concatenated text</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a>df[<span class="st">'full_text'</span>] <span class="op">=</span> (<span class="st">'Recipe title: '</span> <span class="op">+</span> </span>
-<span id="cb2-14"><a href="#cb2-14"></a>                        df[<span class="st">'title'</span>] <span class="op">+</span> </span>
-<span id="cb2-15"><a href="#cb2-15"></a>                        <span class="st">'. Ingredients: '</span> <span class="op">+</span> </span>
-<span id="cb2-16"><a href="#cb2-16"></a>                        df[<span class="st">'ingredients'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">'; '</span>.join(x)) <span class="op">+</span> </span>
-<span id="cb2-17"><a href="#cb2-17"></a>                        <span class="st">'. Instructions: '</span> <span class="op">+</span> </span>
-<span id="cb2-18"><a href="#cb2-18"></a>                        df[<span class="st">'instructions'</span>])</span>
-<span id="cb2-19"><a href="#cb2-19"></a></span>
-<span id="cb2-20"><a href="#cb2-20"></a>df <span class="op">=</span> (df.</span>
-<span id="cb2-21"><a href="#cb2-21"></a>      <span class="co"># remove adds</span></span>
-<span id="cb2-22"><a href="#cb2-22"></a>      pipe(remove_advertisement).</span>
-<span id="cb2-23"><a href="#cb2-23"></a>      <span class="co"># drop the picture_link column</span></span>
-<span id="cb2-24"><a href="#cb2-24"></a>      drop([<span class="st">'picture_link'</span>], axis <span class="op">=</span> <span class="dv">1</span>).</span>
-<span id="cb2-25"><a href="#cb2-25"></a>      <span class="co"># give a num_words estimation</span></span>
-<span id="cb2-26"><a href="#cb2-26"></a>      assign(num_words <span class="op">=</span> <span class="kw">lambda</span> d: d[<span class="st">'full_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()).</span>
-<span id="cb2-27"><a href="#cb2-27"></a>      <span class="co"># drop short articles</span></span>
-<span id="cb2-28"><a href="#cb2-28"></a>      loc[<span class="kw">lambda</span> d: d[<span class="st">'num_words'</span>] <span class="op">&gt;</span> num_words_cutoff]</span>
-<span id="cb2-29"><a href="#cb2-29"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="step-2---document-embeddings" class="slide level2">
-<h2>Step 2 - Document Embeddings</h2>
-<div>
-<div class="fragment fade-in" style="margin-top: 5em;">
-<ul>
-<li class="fragment">What is a <code>document</code>?</li>
-<li class="fragment">What is an <code>embedding</code>?</li>
-</ul>
-</div>
-</div>
-</section>
-<section id="document-embeddings-goal" class="slide level2">
-<h2>Document Embeddings Goal</h2>
-<section id="find-numerical-representation-of-the-documents-such-that-semantically-similar-articles-are-close." style="margin-top: 5em;">
-<h3>Find numerical representation of the documents such that semantically similar articles are close.</h3>
-<h4 id="and-semantically-dissimilar-articles---far.">And semantically dissimilar articles - far.</h4>
-</section>
-</section>
-<section id="document-representations" class="slide level2">
-<h2>Document representations</h2>
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="/images/doc_representations.png"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="document-representations-1" class="slide level2">
-<h2>Document representations</h2>
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="/images/doc_reps_movies.png"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="old-school---term-frequency" class="slide level2">
-<h2>Old School - Term frequency</h2>
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="/images/term_freq.png"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="old-school---inverse-document-frequency" class="slide level2">
-<h2>Old School - Inverse Document Frequency</h2>
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="/images/idf.png"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="old-school---tf-idf" class="slide level2">
-<h2>Old School - TF-IDF</h2>
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 2.9%;justify-content: center;">
-<p>&nbsp;</p>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 44.1%;justify-content: center;">
-<div class="quarto-figure quarto-figure-right">
-<figure>
-<p><img data-src="/images/term_freq.png"></p>
-</figure>
-</div>
-</div>
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 18.6%;justify-content: center;">
-<p>&nbsp;</p>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 15.7%;justify-content: center;">
-<div class="quarto-figure quarto-figure-left">
-<figure>
-<p><img data-src="/images/idf.png"></p>
-</figure>
-</div>
-</div>
-<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 18.6%;justify-content: center;">
-<p>&nbsp;</p>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<p><img data-src="/images/tf-idf.png"></p>
-</div>
-</div>
-</div>
-</section>
-<section id="common-sparse-representation-issues" class="slide level2">
-<h2>Common Sparse Representation Issues</h2>
-<p>Frequently mentioned: - Lexical gap: UK, United Kingdom, England - Word order not preserved</p>
-<p>Actual issues: - Requires a “vocabulary” of size (n_training docs, nr_tokens_retained) in memory e.g.&nbsp;(50 000, 100 000) - Huge vectors - tough for clustering tasks</p>
-</section>
-<section id="old-school---tf-idf-1" class="slide level2">
-<h2>Old School - TF-IDF</h2>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a>vectoriser <span class="op">=</span> TfidfVectorizer(</span>
-<span id="cb3-5"><a href="#cb3-5"></a>    stop_words<span class="op">=</span><span class="st">'english'</span>, <span class="co"># default is without it, but this decreases the dictionary size significantly</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>    min_df <span class="op">=</span> <span class="dv">2</span>, <span class="co"># Ignore terms that have a document frequency strictly lower than the given threshold. When float, proportion of docs.</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>    max_df <span class="op">=</span> <span class="fl">0.95</span>, <span class="co"># ignore terms that have a document frequency strictly higher than the given threshold (corpus-specific stop words).</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>    ngram_range<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="co"># uni and bi-grams</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a>    max_features<span class="op">=</span><span class="dv">30_000</span>, <span class="co"># unigrams are ca. 22K, get top 8000 bigrams</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>    dtype<span class="op">=</span>np.float32 <span class="co"># Reduces the size of the resulting array without much quality sacrifice, default is float64</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a>)</span>
-<span id="cb3-12"><a href="#cb3-12"></a></span>
-<span id="cb3-13"><a href="#cb3-13"></a>embeddings <span class="op">=</span> vectoriser.fit_transform(recipe_data.full_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="dense-document-representations" class="slide level2">
-<h2>Dense document representations</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource tex number-lines code-with-copy"><code class="sourceCode latex"><span id="cb4-1"><a href="#cb4-1"></a>f(Text) -&gt; Representation^n</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
-<li class="fragment"><code>n</code> dimensional representation</li>
-<li class="fragment">Find function <code>f</code> such that semantically similar text is close</li>
-</ul>
-<div class="footer">
-<p>Source: Nils Reimers, Introduction to Dense Text Representations</p>
-</div>
-</section>
-<section id="what-does-semantically-similar-mean" class="slide level2">
-<h2>What does semantically similar mean?</h2>
-
-<img data-src="/images/sem_similarity.png" class="r-stretch"><div class="footer">
-<p>Based on: Nils Reimers, Introduction to Dense Text Representations</p>
-</div>
-</section>
-<section id="sentence-transformers" class="slide level2">
-<h2>Sentence Transformers</h2>
-
-<img data-src="/images/sbert.png" class="r-stretch"></section>
-<section id="loss-functions" class="slide level2">
-<h2>Loss functions</h2>
-
-<img data-src="https://huggingface.co/blog/assets/95_training_st_models/datasets_table.png" class="r-stretch"></section>
-<section id="sentencetransformers---triplet-loss-example" class="slide level2">
-<h2>SentenceTransformers - Triplet loss example</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>{<span class="st">'set'</span>:</span>
-<span id="cb5-2"><a href="#cb5-2"></a> {<span class="st">'query'</span>: <span class="st">'What can I do to get better grades?'</span>,</span>
-<span id="cb5-3"><a href="#cb5-3"></a>  <span class="st">'pos'</span>: </span>
-<span id="cb5-4"><a href="#cb5-4"></a>[<span class="st">'How do I improve my grades?'</span>],</span>
-<span id="cb5-5"><a href="#cb5-5"></a>  <span class="st">'neg'</span>: </span>
-<span id="cb5-6"><a href="#cb5-6"></a>[<span class="st">'Why do I get bad grades even though I study a lot?'</span>,</span>
-<span id="cb5-7"><a href="#cb5-7"></a>   <span class="st">'How can I get better grades in maths?'</span>,</span>
-<span id="cb5-8"><a href="#cb5-8"></a>   <span class="st">'How serious is forging high school grades?'</span>]</span>
-<span id="cb5-9"><a href="#cb5-9"></a>}</span>
-<span id="cb5-10"><a href="#cb5-10"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-<img data-src="/images/triplet_loss.png" class="r-stretch"><div class="footer">
-<p>Nils Reimers, Introduction to Dense Text Representations</p>
-</div>
-</section>
-<section id="sentence-transformers---choices" class="slide level2">
-<h2>Sentence Transformers - Choices</h2>
-<p>A family of language models finetuned to produce document* embeddings</p>
-<div style="text-align: center; margin-top: 1em">
-<p><a href="https://www.sbert.net/docs/pretrained_models.html" data-preview-link="true" style="text-align: center">Pretrained Sentence Transformers</a></p>
-</div>
-<div class="footer">
-<p>*Up to 512 tokens (ca. 400 words)</p>
-</div>
-</section>
-<section id="choices---mteb" class="slide level2">
-<h2>Choices - MTEB</h2>
-<p>Massive Text Embedding Benchmark (<a href="https://huggingface.co/spaces/mteb/leaderboard" data-preview-link="true" style="text-align: center">MTEB</a>)</p>
-
-<img data-src="/images/mteb_2.png" class="r-stretch"></section>
-<section id="sentence-transformers-api" class="slide level2">
-<h2>Sentence Transformers API</h2>
-<div style="text-align: center; margin-top: 4em">
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
-<span id="cb6-2"><a href="#cb6-2"></a></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co"># download model</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a>vectoriser <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># ensure that the model vectorises up to 512 tokens</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a>vectoriser.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a></span>
-<span id="cb6-8"><a href="#cb6-8"></a>docs <span class="op">=</span> [rec <span class="cf">for</span> rec <span class="kw">in</span> recipe_data.full_text]</span>
-<span id="cb6-9"><a href="#cb6-9"></a>embeddings <span class="op">=</span> vectoriser.encode(docs, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section>
-<section>
-<section id="how-do-you-know-if-youve-done-a-good-job" class="title-slide slide level1 center">
-<h1>How do you know if you’ve done a good job?</h1>
-
-</section>
-<section id="embeddings-visualizations" class="slide level2">
-<h2>Embeddings visualizations</h2>
-<ol type="1">
-<li class="fragment">Reduce dimensions to 2 (UMAP seems to be the best option, TruncatedSVD for sparse data)</li>
-<li class="fragment">Create an interactive plot:</li>
-</ol>
-<ul>
-<li class="fragment">good options - altair, bokeh, plotly</li>
-</ul>
-</section>
-<section id="embeddings-visualizations-with-bulk" class="slide level2">
-<h2>Embeddings visualizations with Bulk</h2>
-<ul>
-<li class="fragment"><a href="https://github.com/koaning/bulk">Bulk</a> - visualisation and initial data labelling in one.</li>
-<li class="fragment">Works with images too!</li>
-</ul>
-<div style="text-align: center; margin-top: 4em">
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="op">!</span>python <span class="op">-</span>m bulk text data<span class="op">/</span>bulk_st.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section>
-<section id="simple-semantic-search" class="slide level2">
-<h2>Simple Semantic Search</h2>
-</section>
-<section id="simple-semantic-search-1" class="slide level2">
-<h2>Simple Semantic Search</h2>
-</section></section>
-<section>
-<section id="further-know-your-dataset" class="title-slide slide level1 center">
-<h1>Further know your dataset</h1>
-
-</section>
-<section id="topic-modelling-with-bertopic" class="slide level2">
-<h2>Topic modelling with BERTopic</h2>
-<ul>
-<li class="fragment"><a href="https://maartengr.github.io/BERTopic/index.html">BERTopic</a> - like a lego for topic modelling</li>
-<li class="fragment">Embrace modularity <img data-src="https://maartengr.github.io/BERTopic/algorithm/default.svg" style="width:80.0%;height:80.0%"></li>
-<li class="fragment">Fast, when you already have the embeddings</li>
-</ul>
-</section>
-<section id="topic-modelling-with-bertopic-1" class="slide level2">
-<h2>Topic modelling with BERTopic</h2>
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>vectoriser_model <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span><span class="st">"english"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>hdbscan_model <span class="op">=</span> HDBSCAN(min_cluster_size<span class="op">=</span><span class="dv">10</span>, </span>
-<span id="cb8-3"><a href="#cb8-3"></a>                        min_samples <span class="op">=</span> <span class="dv">1</span>, <span class="co"># This to reduce outliers as much as possible</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a>                        cluster_selection_epsilon <span class="op">=</span> <span class="fl">0.1</span>, <span class="co"># Reduce number of clusters</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a>                        metric<span class="op">=</span><span class="st">'euclidean'</span>, </span>
-<span id="cb8-6"><a href="#cb8-6"></a>                        prediction_data<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb8-7"><a href="#cb8-7"></a></span>
-<span id="cb8-8"><a href="#cb8-8"></a>sentence_model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
-<span id="cb8-9"><a href="#cb8-9"></a>sentence_model.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a></span>
-<span id="cb8-11"><a href="#cb8-11"></a>representation_model <span class="op">=</span> MaximalMarginalRelevance(diversity<span class="op">=</span><span class="fl">0.2</span>)</span>
-<span id="cb8-12"><a href="#cb8-12"></a></span>
-<span id="cb8-13"><a href="#cb8-13"></a>topic_model <span class="op">=</span> BERTopic(</span>
-<span id="cb8-14"><a href="#cb8-14"></a>    vectorizer_model<span class="op">=</span>vectoriser_model,</span>
-<span id="cb8-15"><a href="#cb8-15"></a>    hdbscan_model <span class="op">=</span> hdbscan_model,</span>
-<span id="cb8-16"><a href="#cb8-16"></a>    min_topic_size<span class="op">=</span><span class="dv">20</span>,</span>
-<span id="cb8-17"><a href="#cb8-17"></a>    n_gram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb8-18"><a href="#cb8-18"></a>    embedding_model<span class="op">=</span>sentence_model, </span>
-<span id="cb8-19"><a href="#cb8-19"></a>    representation_model<span class="op">=</span>representation_model</span>
-<span id="cb8-20"><a href="#cb8-20"></a>    )</span>
-<span id="cb8-21"><a href="#cb8-21"></a></span>
-<span id="cb8-22"><a href="#cb8-22"></a>topics, probs <span class="op">=</span> topic_model.fit_transform(docs, embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="topic-modelling-with-bertopic-2" class="slide level2">
-<h2>Topic modelling with BERTopic</h2>
-<p><video data-src="/images/bertopic_intertopic_distance.mov" controls=""><a href="/images/bertopic_intertopic_distance.mov">Video</a></video></p>
-</section></section>
-<section>
-<section id="annotate-your-dataset" class="title-slide slide level1 center">
-<h1>Annotate your dataset</h1>
-
-</section>
-<section id="some-work---already-done" class="slide level2">
-<h2>Some work - already done</h2>
-<ul>
-<li class="fragment">Use Bulk</li>
-<li class="fragment">Use BERTopic</li>
-<li class="fragment">Third option - annotation tools</li>
-</ul>
-</section>
-<section id="annotation" class="slide level2">
-<h2>Annotation</h2>
-<p>Any process of adding metadata tags to your text data can be called <code>annotation</code>.</p>
-<p>Different examples of annotation:</p>
-<ul>
-<li class="fragment">Text classification</li>
-<li class="fragment">Named entities</li>
-<li class="fragment">Entity linking</li>
-</ul>
-</section>
-<section id="annotation-tools" class="slide level2">
-<h2>Annotation Tools</h2>
-<ol type="1">
-<li class="fragment">Paid tools:
-<ul>
-<li class="fragment"><a href="https://prodi.gy/">Prodigy</a> (by Explosion (the SpaCy maintainers)) - supports <code>active learning</code></li>
-<li class="fragment"><a href="https://www.tagtog.com/-plans">TagTog</a></li>
-<li class="fragment"><a href="https://www.lighttag.io/pricing">LightTag</a></li>
-</ul></li>
-<li class="fragment">Open Source tools:
-<ul>
-<li class="fragment"><a href="https://docs.argilla.io/en/latest/index.html">Argilla</a> - New and quite powerful.</li>
-<li class="fragment"><a href="https://doccano.github.io/doccano/">Doccano</a></li>
-<li class="fragment"><a href="https://github.com/agermanidis/pigeon">Pigeon</a> - Simplest of all</li>
-</ul></li>
-</ol>
-</section>
-<section id="pigeon---annotate-in-jupyter" class="slide level2">
-<h2>Pigeon - annotate in Jupyter</h2>
-<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>annotations <span class="op">=</span> annotate(</span>
-<span id="cb9-2"><a href="#cb9-2"></a>  recipe_data.full_text.sample(<span class="dv">100</span>),</span>
-<span id="cb9-3"><a href="#cb9-3"></a>  <span class="co"># 1 - Very Easy, 2 - Kinda Easy, 3 - Moderate to Hard, 4 - Hard</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a>  options<span class="op">=</span>[<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'3'</span>, <span class="st">'4'</span>],</span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="co"># The below is needed just because the recipes are long and tough to see.</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>  display_fn<span class="op">=</span><span class="kw">lambda</span> x: pprint(x)</span>
-<span id="cb9-7"><a href="#cb9-7"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section></section>
-<section>
-<section id="few-shot-learning-with-setfit" class="title-slide slide level1 center">
-<h1>Few-shot learning with SetFit</h1>
-
-</section>
-<section id="zero-shot-vs.-few-shot-learning" class="slide level2">
-<h2>Zero-shot vs.&nbsp;Few-shot learning</h2>
-<p><img data-src="/images/zero-shot.png" class="absolute" style="top: 70px; left: 0px; width: 45%; height: 30%; "></p>
-<p><img data-src="/images/few-shot.png" class="absolute" style="bottom: 0px; right: 0px; width: 45%; height: 45%; "></p>
-<div class="footer">
-<p>Source: GPT-3 paper https://arxiv.org/pdf/2005.14165.pdf</p>
-</div>
-</section>
-<section id="few-shot-learning-with-setfit-1" class="slide level2">
-<h2>Few-shot learning with SetFit</h2>
-</section></section>
-<section>
-<section id="deploy" class="title-slide slide level1 center">
-<h1>Deploy</h1>
-
-</section>
-<section id="streamlit---why-do-i-love-it" class="slide level2">
-<h2>Streamlit - why do I love it?</h2>
-<ol type="1">
-<li class="fragment"><p>Do your usual flow</p></li>
-<li class="fragment"><p>Sprinkle some <a href="https://docs.streamlit.io/">streamlit</a> calls</p>
-<ul>
-<li class="fragment">Love the docs &amp; blog</li>
-</ul></li>
-<li class="fragment"><p>Get your app.</p></li>
-<li class="fragment"><p>Stakeholders and teammates love it!</p></li>
-</ol>
-</section>
-<section id="steamlit-notes" class="slide level2">
-<h2>Steamlit notes</h2>
-<p>Utilize caching - <code>@st.cache_resource</code> and <code>@st.cache_data</code> and wrap in functions</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="at">@st.cache_resource</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">def</span> load_model():</span>
-<span id="cb10-3"><a href="#cb10-3"></a>    model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L12-v2"</span>)</span>
-<span id="cb10-4"><a href="#cb10-4"></a>    model.max_seq_length <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>    <span class="cf">return</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section></section>
-<section>
-<section id="scale" class="title-slide slide level1 center">
-<h1>Scale</h1>
-
-</section>
-<section id="indexing-and-vector-stores" class="slide level2">
-<h2>Indexing and vector stores</h2>
-</section></section>
-<section>
-<section id="a-note-on-langchain" class="title-slide slide level1 center">
-<h1>A note on <code>LangChain</code></h1>
-
-</section>
-<section id="summary" class="slide level2">
-<h2>Summary</h2>
-</section></section>
-<section id="qa" class="title-slide slide level1 center">
-<h1>Q&amp;A</h1>
+<section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<p><video data-src="images/bulk_demo.mov" controls=""><a href="images/bulk_demo.mov">Video</a></video></p>
 
 <img src="images/nlp_tools.jpeg" class="slide-logo r-stretch"><div class="footer footer-default">
-<p>SoftUni AI conference</p>
+<p>sli.do AI-Conf</p>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -997,6 +1224,7 @@
   <script src="slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="slides_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -1018,7 +1246,8 @@
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":false},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -1189,7 +1418,7 @@
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
           RevealMath,
           RevealNotes,

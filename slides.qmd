@@ -2,11 +2,10 @@
 title: "Going far with open source tools in NLP"
 subtitle: "Krum Arnaudov, Data Scientist at Financial Times, 2023"
 format:
-  revealjs: 
+  revealjs:
+    embed-resources: true
     incremental: true
     slide-number: true
-    chalkboard: 
-      buttons: false
     theme: serif
     preview-links: auto
     logo: images/nlp_tools.jpeg
@@ -156,7 +155,7 @@ And semantically `dissimilar documents - far. `
 
 ## What does semantically similar mean?
 
-![](/images/sem_similarity.png)
+![](images/sem_similarity.png)
 
 ::: footer
 Based on: Nils Reimers, Introduction to Dense Text Representations
@@ -165,16 +164,16 @@ Based on: Nils Reimers, Introduction to Dense Text Representations
 ## Document representations
 
 ::: {style="margin-top: 3em"}
-![](/images/doc_representations.png){fig-align="center"}
+![](images/doc_representations.png){fig-align="center"}
 :::
 
 ## Document representations
 
 ::: {style="margin-top: 3em"}
-![](/images/doc_reps_movies.png){fig-align="center"}
+![](images/doc_reps_movies.png){fig-align="center"}
 :::
 
-## Sentence Transformers {chalkboard-buttons="true"}
+## Sentence Transformers
 
 ::: {style="margin-top: 3em"}
 A family of [language models](https://www.sbert.net/){preview-link="true"} finetuned specifically to produce document representations.
@@ -187,7 +186,7 @@ A family of [language models](https://www.sbert.net/){preview-link="true"} finet
 
 ## Sentence Transformers
 
-![](/images/sbert.png)
+![](images/sbert.png)
 
 ::: footer
 Source: Nils Reimers, Introduction to Dense Text Representations
@@ -209,7 +208,7 @@ Source: Nils Reimers, Introduction to Dense Text Representations
 }
 ```
 
-![](/images/triplet_loss.png)
+![](images/triplet_loss.png)
 
 ::: footer
 Nils Reimers, Introduction to Dense Text Representations
@@ -239,7 +238,7 @@ Source: [Huggingface blog](https://huggingface.co/blog/how-to-train-sentence-tra
 
 Massive Text Embedding Benchmark ([MTEB](https://huggingface.co/spaces/mteb/leaderboard){preview-link="true" style="text-align: center"})
 
-![](/images/mteb_2.png)
+![](images/mteb_2.png)
 
 ## Sentence Transformers API
 
@@ -267,7 +266,7 @@ embeddings = vectoriser.encode(docs, show_progress_bar=True)
   - TF-IDF is a strong baseline.
 :::
 
-# How do you know if you've done a good job? {chalkboard-buttons="true"}
+# How do you know if you've done a good job?
 
 ## Option 1 - Visualize
 
@@ -400,7 +399,7 @@ topics, probs = topic_model.fit_transform(docs, embeddings)
 
 ## Topic modelling with BERTopic
 
-![](/images/bertopic_intertopic_distance.mov)
+![](images/bertopic_intertopic_distance.mov)
 
 # Annotate your dataset
 
@@ -452,9 +451,9 @@ annotations = annotate(
 
 ## Zero-shot vs. Few-shot learning
 
-![](/images/zero-shot.png){.absolute top=70 left=0 width="45%" height="30%"}
+![](images/zero-shot.png){.absolute top=70 left=0 width="45%" height="30%"}
 
-![](/images/few-shot.png){.absolute bottom=0 right=0 width="45%" height="45%"}
+![](images/few-shot.png){.absolute bottom=0 right=0 width="45%" height="45%"}
 
 ::: footer
 Source: GPT-3 paper https://arxiv.org/pdf/2005.14165.pdf
@@ -629,23 +628,23 @@ for doc in results[:3]:
 ## Old School - Term frequency
 
 ::: {layout="[[-1], [1], [-1]]"}
-![](/images/term_freq.png){fig-align="center"}
+![](images/term_freq.png){fig-align="center"}
 :::
 
 ## Old School - Inverse Document Frequency
 
 ::: {layout="[[-1], [1], [-1]]"}
-![](/images/idf.png){fig-align="center"}
+![](images/idf.png){fig-align="center"}
 :::
 
 ## Old School - TF-IDF
 
 ::: {layout="[[-3, 45,-19, 16, -19], [100]]" layout-valign="top"}
-![](/images/term_freq.png){fig-align="right"}
+![](images/term_freq.png){fig-align="right"}
 
-![](/images/idf.png){fig-align="left"}
+![](images/idf.png){fig-align="left"}
 
-![](/images/tf-idf.png)
+![](images/tf-idf.png)
 :::
 
 ## Old School - TF-IDF 

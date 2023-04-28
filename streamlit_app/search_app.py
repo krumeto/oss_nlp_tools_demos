@@ -1,7 +1,7 @@
 from sentence_transformers import SentenceTransformer
 from transformers import pipeline
 from sentence_transformers.util import semantic_search
-from data.preprocess_data import combine_json_to_dataframe
+from preprocess_data import combine_json_to_dataframe
 
 import streamlit as st
 from joblib import load

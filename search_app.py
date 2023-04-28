@@ -23,14 +23,14 @@ def load_qa_model(model_name = "deepset/roberta-base-squad2"):
 
 @st.cache_data
 def load_data():
-    recipe_data = (combine_json_to_dataframe("./data/recipes_raw.zip").
+    recipe_data = (combine_json_to_dataframe("data/recipes_raw.zip").
                loc[:, ['title', 'full_text']].
                reset_index(drop=True))
     return(recipe_data)
 
 @st.cache_data
 def load_embeddings():
-    return load("./embeddings/st_embeddings.joblib")
+    return load("embeddings/st_embeddings.joblib")
 
 
 # Set browser title

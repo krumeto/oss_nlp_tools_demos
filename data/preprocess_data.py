@@ -52,7 +52,7 @@ def combine_json_to_dataframe(zip_file_path, num_words_cutoff = 20) -> pd.DataFr
           drop(['picture_link'], axis = 1).
           # give a num_words estimation
           assign(num_words = lambda d: d['full_text'].str.split().str.len()).
-          # drop short articles
+          # drop short recipes
           loc[lambda d: d['num_words'] > num_words_cutoff]
     )
 

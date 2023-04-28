@@ -98,7 +98,7 @@ df = (df.
       drop(['picture_link'], axis = 1).
       # give a num_words estimation
       assign(num_words = lambda d: d['full_text'].str.split().str.len()).
-      # drop short articles
+      # drop short recipes
       loc[lambda d: d['num_words'] > num_words_cutoff]
 )
 
@@ -174,85 +174,15 @@ Based on: Nils Reimers, Introduction to Dense Text Representations
 ![](/images/doc_reps_movies.png){fig-align="center"}
 :::
 
-
-## Old School - Term frequency
-
-::: {layout="[[-1], [1], [-1]]"}
-![](/images/term_freq.png){fig-align="center"}
-:::
-
-## Old School - Inverse Document Frequency
-
-::: {layout="[[-1], [1], [-1]]"}
-![](/images/idf.png){fig-align="center"}
-:::
-
-## Old School - TF-IDF
-
-::: {layout="[[-3, 45,-19, 16, -19], [100]]" layout-valign="top"}
-![](/images/term_freq.png){fig-align="right"}
-
-![](/images/idf.png){fig-align="left"}
-
-![](/images/tf-idf.png)
-:::
-
-## Old School - TF-IDF 
-
-Using `sklearn`'s `TfidfVectorizer`:
-```{python}
-#| echo: true
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-
-vectoriser = TfidfVectorizer(
-    stop_words='english', # default is without it, but this decreases the dictionary size significantly
-    min_df = 2, # Ignore terms that have a document frequency strictly lower than the given threshold. When float, proportion of docs.
-    max_df = 0.95, # ignore terms that have a document frequency strictly higher than the given threshold (corpus-specific stop words).
-    ngram_range=(1,2), # uni and bi-grams
-    max_features=30_000, # unigrams are ca. 22K, get top 8000 bigrams
-    dtype=np.float32 # Reduces the size of the resulting array without much quality sacrifice, default is float64
-)
-
-embeddings = vectoriser.fit_transform(recipe_data.full_text)
-```
-
-## Common Sparse Representation Issues
-
-- Frequently mentioned:
-
-  - Lexical gap: UK, United Kingdom, England
-  - Word order not preserved
-
-- Actual issues:
-
-  - Requires a “vocabulary” of size (n_training docs, nr_tokens_retained) in memory e.g. (50 000, 100 000)
-  - Huge vectors - tough for clustering tasks, store and scale.
-
-## Dense Document Representations
+## Sentence Transformers {chalkboard-buttons="true"}
 
 ::: {style="margin-top: 3em"}
-- *`f`(Text)* -> *Representation^`n`*
-- `n` dimensional representation
-- Find function `f` such that semantically similar text is close
-:::
-
-::: footer
-Source: Nils Reimers, Introduction to Dense Text Representations
-:::
-
-## Sentence Transformers
-
-::: {style="margin-top: 3em"}
-A family of language models finetuned specifically to produce document representations.
+A family of [language models](https://www.sbert.net/){preview-link="true"} finetuned specifically to produce document representations.
 
 - Great for semantic search, clustering, classification...
 - Work with multilanguage models as well. Images too!
 - Build to work well with Huggingface and friends.
 
-::: {style="text-align: center; margin-top: 1em"}
-[Pretrained Sentence Transformers](https://www.sbert.net/docs/pretrained_models.html){preview-link="true" style="text-align: center"}
-:::
 :::
 
 ## Sentence Transformers
@@ -326,6 +256,15 @@ vectoriser.max_seq_length = 512
 docs = [rec for rec in recipe_data.full_text]
 embeddings = vectoriser.encode(docs, show_progress_bar=True)
 ```
+:::
+
+## Sentence Transformers - Notes
+
+::: {style="margin-top: 3em"}
+- Up to max. 512 *tokens* (ca. 400 words). The rest of the text gets truncated.
+  - Different `max_seq_length` defaults, can increase to 512.
+- For longer docs - consider splitting (by paragraph, overlapping windows, etc...)
+  - TF-IDF is a strong baseline.
 :::
 
 # How do you know if you've done a good job? {chalkboard-buttons="true"}
@@ -421,7 +360,7 @@ get_most_similar_doc(text = creme_brulee_recipe,
 vectoriser_model = CountVectorizer(stop_words="english")
 
 topic_model = BERTopic(
-    vectorizer_model=vectoriser_model,
+    vectorizer_model=vectoriser_model
     )
 
 topics, probs = topic_model.fit_transform(docs, embeddings)
@@ -495,7 +434,7 @@ Different examples of annotation:
 2. Open Source tools:
     - [Argilla](https://docs.argilla.io/en/latest/index.html){preview-link="true"} - New and quite powerful.
     - [Doccano](https://doccano.github.io/doccano/){preview-link="true"}
-    - [Pigeon](https://github.com/agermanidis/pigeon){preview-link="true"}- Simplest of all
+    - [Pigeon](https://github.com/agermanidis/pigeon){preview-link="true"} - Simplest of all
 
 ## Pigeon - annotate in Jupyter
 
@@ -608,16 +547,16 @@ Indexes have two main components:
 
 ## Vector Stores
 
-Indexing implementations:
-- ElasticSearch
-- FAISS (Facebook, but open source)
-- OpenSearch
-- Chroma
-- SimSity (small but cute)
+- Indexing implementations:
+  - ElasticSearch
+  - FAISS (Facebook, but open source)
+  - OpenSearch
+  - Chroma
+  - SimSity (small but cute)
 
-Some paid ones with free tiers:
-- Pinecone
-- Qdrant
+- Some paid ones with free tiers:
+  - Pinecone
+  - Qdrant
 
 ## Example 1 - SimSity 
 
@@ -666,30 +605,89 @@ db = Chroma.from_texts(texts=[doc for doc in recipe_data.full_text],
 
 ::: {style="margin-top: 2em"}
 ### Value in NLP can be created with Open Source Tools.
-### Small scale is fine.
-### Search is more important than chat. Still.
+### Good embeddings open up opportunities.
+### Search is much more accessible than chat.
 :::
 
 # Q&A
 
 
+# Additional Slides (could be messy, but kept for the curious)
 
 
----
+## Old School - Term frequency
 
+::: {layout="[[-1], [1], [-1]]"}
+![](/images/term_freq.png){fig-align="center"}
+:::
+
+## Old School - Inverse Document Frequency
+
+::: {layout="[[-1], [1], [-1]]"}
+![](/images/idf.png){fig-align="center"}
+:::
+
+## Old School - TF-IDF
+
+::: {layout="[[-3, 45,-19, 16, -19], [100]]" layout-valign="top"}
+![](/images/term_freq.png){fig-align="right"}
+
+![](/images/idf.png){fig-align="left"}
+
+![](/images/tf-idf.png)
+:::
+
+## Old School - TF-IDF 
+
+Using `sklearn`'s `TfidfVectorizer`:
+```{python}
+#| echo: true
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+vectoriser = TfidfVectorizer(
+    stop_words='english', # default is without it, but this decreases the dictionary size significantly
+    min_df = 2, # Ignore terms that have a document frequency strictly lower than the given threshold. When float, proportion of docs.
+    max_df = 0.95, # ignore terms that have a document frequency strictly higher than the given threshold (corpus-specific stop words).
+    ngram_range=(1,2), # uni and bi-grams
+    max_features=30_000, # unigrams are ca. 22K, get top 8000 bigrams
+    dtype=np.float32 # Reduces the size of the resulting array without much quality sacrifice, default is float64
+)
+
+embeddings = vectoriser.fit_transform(recipe_data.full_text)
+```
+
+## Common Sparse Representation Issues
+
+- Frequently mentioned:
+
+  - Lexical gap: UK, United Kingdom, England
+  - Word order not preserved
+
+- Actual issues:
+
+  - Requires a “vocabulary” of size (n_training docs, nr_tokens_retained) in memory e.g. (50 000, 100 000)
+  - Huge vectors - tough for clustering tasks, store and scale.
+
+## Dense Document Representations
 
 ::: {style="margin-top: 3em"}
-### Value in NLP can be created with Open Source Tools.
-### Small scale is fine.
-### Search is more important than chat. Still.
+- *`f`(Text)* -> *Representation^`n`*
+- `n` dimensional representation
+- Find function `f` such that semantically similar text is close
 :::
+
+::: footer
+Source: Nils Reimers, Introduction to Dense Text Representations
+:::
+
 
 ## Why do I strongly dislike closed source
 
 ::: incremental
-- **Not the spirit of ML.**
-- **Not the spirit of SW.**
-- Danger of knowledge 
+- Not the spirit of ML.
+- Not the spirit of SW.
+- Danger of knowledge loss in the long term
 :::
 
 ## Also
@@ -698,16 +696,6 @@ db = Chroma.from_texts(texts=[doc for doc in recipe_data.full_text],
 
 ::: footer
 Source: https://twitter.com/julien_c/status/1648738233696632832/photo/1
-:::
-
-## (Another) Revolution in NLP
-
-::: incremental
-- Generative foundational models - GPT-3.5/GPT-4, BARD, LlaMa
-- Focus on text generation/human interactions
-- Semantic search
-- Vector storage / VectorDBs - Pinecone, Weaviate, ChromaDB, etc...
-- Amazing open source tools - Huggingface, LangChain...
 :::
 
 ## What is a open source language model?
@@ -726,24 +714,3 @@ Source: https://twitter.com/julien_c/status/1648738233696632832/photo/1
 ::: footer
 Source: https://twitter.com/theaievangelist/status/1645809824314298368/photo/1
 :::
-
-## Open Source vs. Propriatary 
-
-- ChatGPT is so cool!!!
-  - quasi-monopoly in text generation/interactions
-  - rates changes risk
-  - public to private knowledge (SOF)
-
-## Open Source vs. Propriatary
-
-- Huggingface 
-- Academia 
-- The ML Community TM
-
-## Open?AI
-
-My data, my kingdom.
-
-## Motivation
-
-![](images/bulk_demo.mov)

@@ -560,7 +560,6 @@ Indexes have two main components:
 
 ## Example 1 - SimSity 
 
-::: {style="margin-top: 1em"}
 ```{.python}
 from simsity import create_index, load_index
 
@@ -581,12 +580,15 @@ index = create_index([rec for rec in recipe_data.full_text],
                      encoder,
                      path="../embeddings/"
                      )
+
+test_recipe = """
+Some recipe
+"""
+index.query(test_recipe, n=3)
 ```                     
-:::
 
 ## Example 2 - ChromaDB + LangChain
 
-::: {style="margin-top: 2em"}
 ```{.python}
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
@@ -596,8 +598,17 @@ db = Chroma.from_texts(texts=[doc for doc in recipe_data.full_text],
                            embedding=embeddings,
                            persist_directory="../embeddings/chromadb"
                            )
+test_recipe = """
+Some recipe
+"""
+results = db.similarity_search_with_score(test_recipe)
+
+for doc in results[:3]:
+    print("#"*50)
+    print("Distance: ", doc[1])
+    # First 100 chars of the doc
+    print(doc[0].page_content[:100])
 ```
-:::
 
 # A note on `LangChain`
 
@@ -606,7 +617,7 @@ db = Chroma.from_texts(texts=[doc for doc in recipe_data.full_text],
 ::: {style="margin-top: 2em"}
 ### Value in NLP can be created with Open Source Tools.
 ### Good embeddings open up opportunities.
-### Search is much more accessible than chat.
+### Search is much more accessible than chat. Might also be more powerful.
 :::
 
 # Q&A

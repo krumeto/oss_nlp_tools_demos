@@ -972,7 +972,6 @@
 </section>
 <section id="example-1---simsity" class="slide level2">
 <h2>Example 1 - SimSity</h2>
-<div style="margin-top: 1em">
 <div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> simsity <span class="im">import</span> create_index, load_index</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="co"># simsity requires the encoder class to have a `transform` method, thus this simple wrapper.</span></span>
@@ -991,12 +990,15 @@
 <span id="cb13-16"><a href="#cb13-16"></a>index <span class="op">=</span> create_index([rec <span class="cf">for</span> rec <span class="kw">in</span> recipe_data.full_text], </span>
 <span id="cb13-17"><a href="#cb13-17"></a>                     encoder,</span>
 <span id="cb13-18"><a href="#cb13-18"></a>                     path<span class="op">=</span><span class="st">"../embeddings/"</span></span>
-<span id="cb13-19"><a href="#cb13-19"></a>                     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<span id="cb13-19"><a href="#cb13-19"></a>                     )</span>
+<span id="cb13-20"><a href="#cb13-20"></a></span>
+<span id="cb13-21"><a href="#cb13-21"></a>test_recipe <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb13-22"><a href="#cb13-22"></a><span class="st">Some recipe</span></span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="st">"""</span></span>
+<span id="cb13-24"><a href="#cb13-24"></a>index.query(test_recipe, n<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="example-2---chromadb-langchain" class="slide level2">
 <h2>Example 2 - ChromaDB + LangChain</h2>
-<div style="margin-top: 2em">
 <div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="im">from</span> langchain.embeddings <span class="im">import</span> HuggingFaceEmbeddings</span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="im">from</span> langchain.vectorstores <span class="im">import</span> Chroma</span>
 <span id="cb14-3"><a href="#cb14-3"></a></span>
@@ -1004,8 +1006,17 @@
 <span id="cb14-5"><a href="#cb14-5"></a>db <span class="op">=</span> Chroma.from_texts(texts<span class="op">=</span>[doc <span class="cf">for</span> doc <span class="kw">in</span> recipe_data.full_text], </span>
 <span id="cb14-6"><a href="#cb14-6"></a>                           embedding<span class="op">=</span>embeddings,</span>
 <span id="cb14-7"><a href="#cb14-7"></a>                           persist_directory<span class="op">=</span><span class="st">"../embeddings/chromadb"</span></span>
-<span id="cb14-8"><a href="#cb14-8"></a>                           )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<span id="cb14-8"><a href="#cb14-8"></a>                           )</span>
+<span id="cb14-9"><a href="#cb14-9"></a>test_recipe <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="st">Some recipe</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="st">"""</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a>results <span class="op">=</span> db.similarity_search_with_score(test_recipe)</span>
+<span id="cb14-13"><a href="#cb14-13"></a></span>
+<span id="cb14-14"><a href="#cb14-14"></a><span class="cf">for</span> doc <span class="kw">in</span> results[:<span class="dv">3</span>]:</span>
+<span id="cb14-15"><a href="#cb14-15"></a>    <span class="bu">print</span>(<span class="st">"#"</span><span class="op">*</span><span class="dv">50</span>)</span>
+<span id="cb14-16"><a href="#cb14-16"></a>    <span class="bu">print</span>(<span class="st">"Distance: "</span>, doc[<span class="dv">1</span>])</span>
+<span id="cb14-17"><a href="#cb14-17"></a>    <span class="co"># First 100 chars of the doc</span></span>
+<span id="cb14-18"><a href="#cb14-18"></a>    <span class="bu">print</span>(doc[<span class="dv">0</span>].page_content[:<span class="dv">100</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section></section>
 <section>
 <section id="a-note-on-langchain" class="title-slide slide level1 center">
@@ -1017,7 +1028,7 @@
 <div style="margin-top: 2em">
 <h3 id="value-in-nlp-can-be-created-with-open-source-tools.">Value in NLP can be created with Open Source Tools.</h3>
 <h3 id="good-embeddings-open-up-opportunities.">Good embeddings open up opportunities.</h3>
-<h3 id="search-is-much-more-accessible-than-chat.">Search is much more accessible than chat.</h3>
+<h3 id="search-is-much-more-accessible-than-chat.-might-also-be-more-powerful.">Search is much more accessible than chat. Might also be more powerful.</h3>
 </div>
 </section></section>
 <section id="qa" class="title-slide slide level1 center">

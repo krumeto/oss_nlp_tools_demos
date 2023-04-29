@@ -4,7 +4,7 @@ This repo contains demos of Open Source NLP tools
 
 ## Note on the Streamlit dashboard
 
-If you'd like to run it locally, you'd need the download the dataset first (see the next section) and also run the [Sentence Transformers notebook](/notebooks/sentence_transformers_embeddings.ipynb) to get the embeddings locally.
+If you'd like to run it locally, you'd need to download the dataset first (see the next section) and also run the [Sentence Transformers notebook](/notebooks/sentence_transformers_embeddings.ipynb) to get the embeddings locally.
 
 ## Dataset
 

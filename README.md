@@ -72,7 +72,7 @@ sudo python setup.py develop
 | Simple annotations| Pigeon |[here](/notebooks/annotations.ipynb)|
 | Few shot classification| SetFit |[here](/notebooks/setfit_fewshot_classification.ipynb)|
 | Simple Indexing and Search| Simsity |[here](/notebooks/simsity_index.ipynb)|
-| Indexing & Search with Langchain| Langchain |[here](/notebooks/langchain_intro.ipynb)|
+| Indexing & Search with ChromaDB & Langchain| ChromaDB & Langchain |[here](/notebooks/langchain_intro.ipynb)|
 | Streamlit search app| Streamlit |[here](/search_app.py), then `streamlit run streamlit_app/search_app.py`|
 
 

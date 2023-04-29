@@ -73,4 +73,12 @@ sudo python setup.py develop
 | Few shot classification| SetFit |[here](/notebooks/setfit_fewshot_classification.ipynb)|
 | Simple Indexing and Search| Simsity |[here](/notebooks/simsity_index.ipynb)|
 | Indexing & Search with Langchain| Langchain |[here](/notebooks/langchain_intro.ipynb)|
-| Streamlit search app| Streamlit |[here](/streamlit_app/search_app.py), then `streamlit run streamlit_app/search_app.py`|
+| Streamlit search app| Streamlit |[here](/search_app.py), then `streamlit run streamlit_app/search_app.py`|
+
+
+## Fun, absolutely not production level outcomes
+
+1. A Huggingface model - https://huggingface.co/krumeto/setfit-recipe-classifer/blob/main/README.md
+2. The Streamlit app needs small changes to be deployable:
+
+    - Files `data/recipes_raw.zip` and `embeddings/st_embeddings.joblib` need to be read from a data storage or handled via Git LFS. Might do it at some point in time. 

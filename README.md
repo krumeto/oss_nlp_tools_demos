@@ -2,6 +2,10 @@
 
 This repo contains demos of Open Source NLP tools
 
+## Note on the Streamlit dashboard
+
+If you'd like to run it locally, you'd need the download the dataset first (see the next section) and also run the [Sentence Transformers notebook](/notebooks/sentence_transformers_embeddings.ipynb) to get the embeddings locally.
+
 ## Dataset
 
 The dataset used is the [Recipe Box](https://eightportions.com/datasets/Recipes/) dataset, collected by Ryan Lee. For the demos, I've kept only recipes with more than 20 words and cleaned the data lightly (see the [preprocess_data.py script](../oss_nlp_tools_demos/data/preprocess_data.py)).
